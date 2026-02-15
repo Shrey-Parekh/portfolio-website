@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   motion,
   useAnimation,
   useMotionValue,
   useTransform,
+  useReducedMotion,
 } from "framer-motion";
 
 // macOS-style Typing Animation Component
@@ -142,6 +143,7 @@ const Hero3D: React.FC<Hero3DProps> = ({ isDarkMode }) => {
   const [scrollY, setScrollY] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
+  const prefersReducedMotion = useReducedMotion();
 
   // Motion values for smooth animations
   const mouseX = useMotionValue(0);
@@ -149,35 +151,51 @@ const Hero3D: React.FC<Hero3DProps> = ({ isDarkMode }) => {
   const rotateX = useTransform(mouseY, [-0.5, 0.5], [-5, 5]);
   const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5]);
 
+  // Throttle mouse movement for better performance
+  const throttleTimeout = useRef<NodeJS.Timeout>();
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current && window.innerWidth > 768) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-        const normalizedX = x - 0.5;
-        const normalizedY = y - 0.5;
+      if (containerRef.current && window.innerWidth > 768 && !prefersReducedMotion) {
+        // Throttle mouse updates to every 50ms
+        if (throttleTimeout.current) return;
+        
+        throttleTimeout.current = setTimeout(() => {
+          const rect = containerRef.current!.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const normalizedX = x - 0.5;
+          const normalizedY = y - 0.5;
 
-        setMousePosition({ x: normalizedX, y: normalizedY });
-        mouseX.set(normalizedX);
-        mouseY.set(normalizedY);
+          setMousePosition({ x: normalizedX, y: normalizedY });
+          mouseX.set(normalizedX);
+          mouseY.set(normalizedY);
+          
+          throttleTimeout.current = undefined;
+        }, 50);
       }
     };
 
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      // Only update scroll on desktop
+      if (window.innerWidth > 768) {
+        setScrollY(window.scrollY);
+      }
     };
 
     const container = containerRef.current;
     if (container) {
-      container.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("scroll", handleScroll);
+      container.addEventListener("mousemove", handleMouseMove, { passive: true });
+      window.addEventListener("scroll", handleScroll, { passive: true });
       return () => {
         container.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("scroll", handleScroll);
+        if (throttleTimeout.current) {
+          clearTimeout(throttleTimeout.current);
+        }
       };
     }
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, prefersReducedMotion]);
 
   // Enhanced entrance animation
   useEffect(() => {
@@ -350,8 +368,8 @@ const Hero3D: React.FC<Hero3DProps> = ({ isDarkMode }) => {
         </motion.div>
 
         {/* Enhanced Smaller Accent Elements */}
-        {[...Array(6)].map((_, i) => {
-          const angle = (i * Math.PI * 2) / 6;
+        {[...Array(prefersReducedMotion ? 3 : 6)].map((_, i) => {
+          const angle = (i * Math.PI * 2) / (prefersReducedMotion ? 3 : 6);
           const radius = 140 + Math.sin(i) * 20;
           const colors = [
             "rgba(0, 122, 255, 0.08)",
@@ -375,6 +393,7 @@ const Hero3D: React.FC<Hero3DProps> = ({ isDarkMode }) => {
                 boxShadow: isHovered
                   ? `0 4px 20px ${colors[i]}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`
                   : `0 2px 12px ${colors[i]}`,
+                willChange: prefersReducedMotion ? 'auto' : 'transform',
               }}
               animate={{
                 x:
@@ -594,8 +613,8 @@ const Hero3D: React.FC<Hero3DProps> = ({ isDarkMode }) => {
       />
 
       {/* Floating light particles */}
-      {isHovered &&
-        [...Array(8)].map((_, i) => (
+      {isHovered && !prefersReducedMotion &&
+        [...Array(4)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 rounded-full"
@@ -603,11 +622,12 @@ const Hero3D: React.FC<Hero3DProps> = ({ isDarkMode }) => {
               background: `rgba(${
                 i % 2 === 0 ? "0, 122, 255" : "88, 86, 214"
               }, 0.6)`,
-              left: `${20 + i * 10}%`,
-              top: `${30 + i * 5}%`,
+              left: `${20 + i * 15}%`,
+              top: `${30 + i * 8}%`,
               boxShadow: `0 0 8px rgba(${
                 i % 2 === 0 ? "0, 122, 255" : "88, 86, 214"
               }, 0.8)`,
+              willChange: 'transform, opacity',
             }}
             animate={{
               y: [0, -20, 0],

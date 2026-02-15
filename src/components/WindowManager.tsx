@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -3198,3 +3198,4 @@ const WindowManager: React.FC<WindowManagerProps> = ({
 };
 
 export default WindowManager;
+
