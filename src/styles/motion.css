@@ -1,0 +1,96 @@
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stamp {
+  0% {
+    transform: translateY(-3px) scaleY(0.85);
+  }
+  55% {
+    transform: translateY(1px) scaleY(1.06);
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.8s var(--ease-out) both;
+}
+
+/* Nav / inline links: a margin annotation mark, not an underline */
+.link-annotate {
+  position: relative;
+  color: var(--fg);
+  text-decoration: none;
+  letter-spacing: 0;
+  transition: letter-spacing var(--dur-base) var(--ease-inout);
+}
+
+.link-annotate::before {
+  content: '\2013';
+  position: absolute;
+  left: -11px;
+  top: 0;
+  opacity: 0;
+  color: var(--accent);
+  transition: opacity var(--dur-fast) ease, left var(--dur-fast) var(--ease-inout);
+}
+
+.link-annotate:hover {
+  letter-spacing: 0.04em;
+}
+
+.link-annotate:hover::before {
+  opacity: 1;
+  left: -14px;
+}
+
+/* Catalog / index rows: a dropping ribbon plus a stamp on the number */
+.ledger-row {
+  position: relative;
+}
+
+.ledger-row::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur-base) var(--ease-inout);
+}
+
+.ledger-row:hover::before {
+  transform: scaleY(1);
+}
+
+.ledger-row:hover .ledger-num {
+  animation: stamp 0.45s var(--ease-stamp);
+  color: var(--accent);
+}
+
+/* Day / night toggle: a placard flip, not an instant text swap */
+.toggle-flip {
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle-flip .word {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--dur-base) var(--ease-inout), opacity var(--dur-fast) ease;
+}
