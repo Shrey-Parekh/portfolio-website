@@ -37,6 +37,8 @@ const papers: Paper[] = [
       'Traffic signal control',
       'PCU weighting',
     ],
+    pdf: '/vca-paper.pdf',
+    size: '1.4 MB',
   },
   {
     id: 'paper-2',
