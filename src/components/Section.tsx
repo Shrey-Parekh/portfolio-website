@@ -1,18 +1,25 @@
 import { ReactNode } from 'react';
+import Container from './Container';
 
 interface SectionProps {
   id: string;
   kicker?: string;
-  children: ReactNode;
+  num?: string;
+  children?: ReactNode;
   className?: string;
 }
 
-const Section = ({ id, kicker, children, className = '' }: SectionProps) => {
+const Section = ({ id, kicker, num, children, className = '' }: SectionProps) => {
   return (
-    <section id={id} className={`relative mx-auto max-w-2xl px-6 py-20 sm:py-28 ${className}`}>
-      {kicker && <p className="mb-4 font-body text-xs italic text-accent">{kicker}</p>}
+    <Container as="section" id={id} className={`py-16 sm:py-20 lg:py-28 ${className}`}>
+      {(kicker || num) && (
+        <div className="mb-8 flex items-baseline gap-3 border-b border-hairline pb-3 sm:mb-10">
+          {num && <span className="font-body text-sm text-muted">{num}</span>}
+          {kicker && <span className="font-body text-sm italic text-accent">{kicker}</span>}
+        </div>
+      )}
       {children}
-    </section>
+    </Container>
   );
 };
 

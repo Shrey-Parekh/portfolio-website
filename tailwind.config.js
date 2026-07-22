@@ -15,6 +15,8 @@ export default {
         bandFg: 'var(--band-fg)',
         tagResearch: 'var(--tag-research)',
         tagSystems: 'var(--tag-systems)',
+        tagWeb: 'var(--tag-web)',
+        tagHardware: 'var(--tag-hardware)',
       },
       fontFamily: {
         display: ['"Playfair Display"', 'serif'],

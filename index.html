@@ -2,10 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%238A6A3B' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='1.6' fill='%238A6A3B'/%3E%3Cpath d='M16 2v6M16 24v6M2 16h6M24 16h6' stroke='%238A6A3B' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shrey Parekh</title>
-    <meta name="description" content="" />
+    <meta name="theme-color" content="#F4F1E7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#221F1B" media="(prefers-color-scheme: dark)" />
+
+    <title>Shrey Parekh — AI/ML Engineer & Developer Portfolio</title>
+    <meta
+      name="description"
+      content="Shrey Parekh — final-year computer engineering student (AI/ML) in Mumbai, India. Multi-agent reinforcement learning, applied machine learning, RAG systems, and full-stack builds. Portfolio, projects, publications, and résumé."
+    />
+    <meta name="author" content="Shrey Parekh" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://shrey-parekh.vercel.app/" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,20 +27,56 @@
       rel="stylesheet"
     />
 
-    <meta property="og:title" content="Portfolio - macOS Themed" />
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack, ...) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Shrey Parekh" />
+    <meta property="og:title" content="Shrey Parekh — AI/ML Engineer & Developer Portfolio" />
     <meta
       property="og:description"
-      content="A pixel-perfect macOS-themed portfolio website showcasing modern web development skills."
+      content="Multi-agent reinforcement learning, applied machine learning, and full-stack builds — a catalogue of work by Shrey Parekh."
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://your-portfolio.vercel.app" />
+    <meta property="og:url" content="https://shrey-parekh.vercel.app/" />
+    <meta property="og:image" content="https://shrey-parekh.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Shrey Parekh — Portfolio" />
 
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Portfolio - macOS Themed" />
+    <meta name="twitter:title" content="Shrey Parekh — AI/ML Engineer & Developer Portfolio" />
     <meta
       name="twitter:description"
-      content="A pixel-perfect macOS-themed portfolio website showcasing modern web development skills."
+      content="Multi-agent reinforcement learning, applied machine learning, and full-stack builds — a catalogue of work by Shrey Parekh."
     />
+    <meta name="twitter:image" content="https://shrey-parekh.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Shrey Parekh — Portfolio" />
+
+    <!-- Structured data: helps search engines associate this site with the
+         person "Shrey Parekh" rather than just the generic phrase. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Shrey Parekh",
+        "url": "https://shrey-parekh.vercel.app/",
+        "image": "https://shrey-parekh.vercel.app/portrait.png",
+        "jobTitle": "AI/ML Engineer",
+        "description": "Final-year computer engineering student (AI/ML) building multi-agent systems, applied machine learning, and full-stack software.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Mumbai",
+          "addressCountry": "IN"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "SVKM's NMIMS MPSTME"
+        },
+        "sameAs": [
+          "https://github.com/Shrey-Parekh",
+          "https://www.linkedin.com/in/shrey-parekh-599a44276/"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

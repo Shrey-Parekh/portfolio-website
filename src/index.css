@@ -9,6 +9,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    font-size: 112.5%;
   }
 
   body {
@@ -16,6 +17,22 @@
     color: var(--fg);
     font-family: var(--font-body);
     transition: background-color 0.6s ease, color 0.6s ease;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Accent-tinted text selection, theme-aware. */
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 26%, transparent);
+    color: var(--fg);
+  }
+
+  /* Visible focus ring for keyboard users (the native cursor is hidden on
+     fine pointers, so this is the main affordance for tabbed navigation). */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 1px;
   }
 
   ::-webkit-scrollbar {

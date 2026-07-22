@@ -2,22 +2,17 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
   server: {
     port: 3000,
     host: true
   },
+  esbuild: mode === 'production' ? { drop: ['console', 'debugger'] } : {},
   build: {
     outDir: 'dist',
     sourcemap: false, // Disable sourcemaps in production for smaller bundle
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.logs in production
-        drop_debugger: true
-      }
-    },
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -32,4 +27,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom', 'framer-motion', 'three']
   }
-})
+}))

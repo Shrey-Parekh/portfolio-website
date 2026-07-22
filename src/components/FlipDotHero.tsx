@@ -40,22 +40,33 @@ const FlipDotHero = () => {
     const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
     const CONFIG = {
-      name: 'SHREY PAREKH',
-      cellSize: 12,
+      lines: ['SHREY', 'PAREKH'],
       flipStrength: 1,
       idleWaves: !reduceMotion,
-      cursorRadius: 90,
     };
 
     const mouse = { x: -9999, y: -9999, vx: 0, vy: 0 };
     let W = 0;
     let H = 0;
     let cell = 0;
+    let cursorRadius = 90;
     let dots: Dot[] = [];
     let ripples: Ripple[] = [];
     let frameId = 0;
     let t = 0;
     let nextWave = 4;
+
+    function pickCell(width: number) {
+      if (width < 400) return 7;
+      if (width < 480) return 9;
+      if (width < 768) return 11;
+      if (width < 1280) return 15;
+      return 18;
+    }
+
+    function pickLayout(width: number) {
+      return width < 640 ? CONFIG.lines : [CONFIG.lines.join(' ')];
+    }
 
     function build() {
       W = wrap!.clientWidth;
@@ -63,7 +74,9 @@ const FlipDotHero = () => {
       canvas!.width = W * DPR;
       canvas!.height = H * DPR;
       ctx!.setTransform(DPR, 0, 0, DPR, 0, 0);
-      cell = Math.max(8, Math.round(CONFIG.cellSize));
+
+      cell = pickCell(W);
+      cursorRadius = Math.max(60, cell * 7.5);
       const cols = Math.floor(W / cell);
       const rows = Math.floor(H / cell);
       const ox = (W - cols * cell) / 2;
@@ -75,20 +88,26 @@ const FlipDotHero = () => {
       const octx = off.getContext('2d');
       if (!octx) return;
 
-      const name = CONFIG.name.toUpperCase();
-      let fs = Math.floor(rows * 0.36);
+      const lines = pickLayout(W);
       octx.textAlign = 'center';
       octx.textBaseline = 'middle';
+
+      const longest = lines.reduce((a, b) => (a.length >= b.length ? a : b));
+      let fs = Math.floor((rows / lines.length) * 0.74);
       do {
         octx.font = `900 ${fs}px "Helvetica Neue", Helvetica, Arial, sans-serif`;
-        if (octx.measureText(name).width <= cols * 0.86) break;
+        if (octx.measureText(longest).width <= cols * 0.92) break;
         fs -= 1;
       } while (fs > 6);
 
       octx.fillStyle = '#000';
-      octx.fillText(name, cols / 2, rows / 2);
-      const data = octx.getImageData(0, 0, cols, rows).data;
+      const lineStep = fs * 1.06;
+      const startY = rows / 2 - (lineStep * (lines.length - 1)) / 2;
+      lines.forEach((line, i) => {
+        octx.fillText(line, cols / 2, startY + i * lineStep);
+      });
 
+      const data = octx.getImageData(0, 0, cols, rows).data;
       dots = [];
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -140,8 +159,7 @@ const FlipDotHero = () => {
       }
 
       const strength = CONFIG.flipStrength;
-      const radius = CONFIG.cursorRadius;
-      const r2 = radius * radius;
+      const r2 = cursorRadius * cursorRadius;
       const speed = Math.min(24, Math.abs(mouse.vx) + Math.abs(mouse.vy));
 
       for (let j = 0; j < dots.length; j++) {
@@ -150,7 +168,7 @@ const FlipDotHero = () => {
         const dy = d.y - mouse.y;
         const d2 = dx * dx + dy * dy;
         if (d2 < r2) {
-          const kick = (1 - Math.sqrt(d2) / radius) * (0.1 + speed * 0.02) * strength;
+          const kick = (1 - Math.sqrt(d2) / cursorRadius) * (0.1 + speed * 0.02) * strength;
           d.v += d.target === 1 ? -kick : kick;
         }
         for (let k = 0; k < ripples.length; k++) {
@@ -199,8 +217,14 @@ const FlipDotHero = () => {
       frameId = requestAnimationFrame(step);
     }
 
+    let resizeTimer: number;
+    function onResize() {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(build, 120);
+    }
+
     build();
-    window.addEventListener('resize', build);
+    window.addEventListener('resize', onResize);
     wrap.addEventListener('pointermove', onPointerMove);
     wrap.addEventListener('pointerleave', onPointerLeave);
     wrap.addEventListener('pointerdown', onPointerDown);
@@ -208,7 +232,8 @@ const FlipDotHero = () => {
 
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', build);
+      window.clearTimeout(resizeTimer);
+      window.removeEventListener('resize', onResize);
       wrap.removeEventListener('pointermove', onPointerMove);
       wrap.removeEventListener('pointerleave', onPointerLeave);
       wrap.removeEventListener('pointerdown', onPointerDown);
@@ -218,20 +243,20 @@ const FlipDotHero = () => {
   return (
     <div
       ref={wrapRef}
-      className="relative h-screen min-h-[540px] w-full overflow-hidden"
-      style={{ background: 'var(--bg)' }}
+      className="relative min-h-[540px] w-full overflow-hidden"
+      style={{ height: '100dvh', background: 'var(--bg)' }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full cursor-crosshair" />
 
-      <div className="pointer-events-none absolute inset-x-0 top-14 text-center font-body text-xs uppercase tracking-[0.3em] text-accent">
+      <div className="pointer-events-none absolute inset-x-0 top-10 text-center font-body text-xs uppercase tracking-[0.3em] text-accent sm:top-14 sm:text-sm">
         Portfolio
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-12 flex flex-col items-center gap-3 px-6 text-center">
-        <p className="font-body text-base text-ink">
+      <div className="pointer-events-none absolute inset-x-0 bottom-[max(2rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-2 px-6 text-center sm:bottom-12 sm:gap-3">
+        <p className="max-w-xs font-body text-base text-ink sm:max-w-none sm:text-lg">
           Projects · skills · interests — everything I make and love
         </p>
-        <small className="font-body text-[11px] uppercase tracking-[0.22em] text-muted">
+        <small className="font-body text-xs uppercase tracking-[0.22em] text-muted sm:text-sm">
           Sweep across · click for a ripple
         </small>
       </div>
