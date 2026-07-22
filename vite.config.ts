@@ -16,15 +16,13 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'animation-vendor': ['framer-motion'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei']
+          'react-vendor': ['react', 'react-dom', 'react-router-dom']
         }
       }
     },
     chunkSizeWarningLimit: 1000
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion', 'three']
+    include: ['react', 'react-dom']
   }
 }))

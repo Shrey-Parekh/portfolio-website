@@ -11,8 +11,6 @@ export default {
         muted: 'var(--muted)',
         accent: 'var(--accent)',
         hairline: 'var(--border)',
-        band: 'var(--band-bg)',
-        bandFg: 'var(--band-fg)',
         tagResearch: 'var(--tag-research)',
         tagSystems: 'var(--tag-systems)',
         tagWeb: 'var(--tag-web)',
