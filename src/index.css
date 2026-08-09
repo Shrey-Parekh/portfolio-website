@@ -19,6 +19,10 @@
     transition: background-color 0.6s ease, color 0.6s ease;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Full-bleed sections are sized in vw, which counts the scrollbar. `clip`
+       absorbs that sliver without creating a scroll container, so the sticky
+       nav keeps working (which `hidden` would break). */
+    overflow-x: clip;
   }
 
   /* Accent-tinted text selection, theme-aware. */

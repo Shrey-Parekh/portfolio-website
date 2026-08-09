@@ -32,6 +32,17 @@ const experience: Role[] = [
   },
   {
     id: 'exp-2',
+    role: 'Web Development Intern',
+    org: 'DealBee',
+    period: 'May – Oct 2025',
+    place: 'WordPress · PHP · MySQL',
+    points: [
+      'Maintained and extended a high-traffic affiliate commerce platform spanning 80,000+ product listings across 15+ categories; owned theme and plugin customisation, template fixes, and front-end regressions.',
+      'Streamlined product ingestion and affiliate link tracking across Amazon and Flipkart programmes, and tuned on-page SEO, structured metadata, and page-load performance ahead of peak sale campaigns.',
+    ],
+  },
+  {
+    id: 'exp-3',
     role: 'Web Development Mentor',
     org: 'We Can We Will Foundation',
     period: '70+ volunteer hours',

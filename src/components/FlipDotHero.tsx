@@ -57,15 +57,20 @@ const FlipDotHero = () => {
     let nextWave = 4;
 
     function pickCell(width: number) {
-      if (width < 400) return 7;
-      if (width < 480) return 9;
-      if (width < 768) return 11;
-      if (width < 1280) return 15;
-      return 18;
+      // Dot pitch. Denser than a coarse grid so each letter is built from
+      // enough dots to be legible (a heavy blob at ~6 dots tall is not).
+      if (width < 480) return 8;
+      if (width < 768) return 9;
+      if (width < 1024) return 10;
+      if (width < 1440) return 12;
+      return 14;
     }
 
     function pickLayout(width: number) {
-      return width < 640 ? CONFIG.lines : [CONFIG.lines.join(' ')];
+      // Single line "SHREY PAREKH" only fits legibly at desktop widths. Below
+      // ~1024px it gets cramped (and clips outright in the 768–870px band where
+      // the cell size jumps), so stack it as two lines there instead.
+      return width < 1024 ? CONFIG.lines : [CONFIG.lines.join(' ')];
     }
 
     function build() {
@@ -91,17 +96,33 @@ const FlipDotHero = () => {
       const lines = pickLayout(W);
       octx.textAlign = 'center';
       octx.textBaseline = 'middle';
+      // A one-dot gap between glyphs keeps letters from merging at low
+      // resolution — the difference between "PAREKH" and an inkblot.
+      if ('letterSpacing' in octx) {
+        (octx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '1px';
+      }
 
       const longest = lines.reduce((a, b) => (a.length >= b.length ? a : b));
+      // Horizontal budget in cells. Conservative so the bold glyphs — whose ink
+      // overhangs their advance width — never touch the edge.
+      const budgetW = cols * 0.86;
       let fs = Math.floor((rows / lines.length) * 0.74);
       do {
-        octx.font = `900 ${fs}px "Helvetica Neue", Helvetica, Arial, sans-serif`;
-        if (octx.measureText(longest).width <= cols * 0.92) break;
+        // 700 (bold), not 900 (black): a lighter weight keeps the counters and
+        // stroke gaps open so E, R, K, Y stay distinguishable as dots.
+        octx.font = `700 ${fs}px "Helvetica Neue", Helvetica, Arial, sans-serif`;
+        const m = octx.measureText(longest);
+        // True ink extent (bounding box), not just the advance width, so the
+        // last letter's overhang is accounted for. Fall back to advance width
+        // on the rare engine without actualBoundingBox support.
+        const ink =
+          (m.actualBoundingBoxLeft || 0) + (m.actualBoundingBoxRight || m.width);
+        if (Math.max(ink, m.width) <= budgetW) break;
         fs -= 1;
       } while (fs > 6);
 
       octx.fillStyle = '#000';
-      const lineStep = fs * 1.06;
+      const lineStep = fs * 1.14;
       const startY = rows / 2 - (lineStep * (lines.length - 1)) / 2;
       lines.forEach((line, i) => {
         octx.fillText(line, cols / 2, startY + i * lineStep);

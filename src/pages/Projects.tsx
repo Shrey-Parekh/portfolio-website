@@ -1,6 +1,7 @@
-import { CSSProperties } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import Section from '../components/Section';
+import Container from '../components/Container';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 type DelayStyle = CSSProperties & Record<'--d', string>;
@@ -245,134 +246,270 @@ const projects: Project[] = [
 const tagText = (tag: Tag) => TAG_STYLES[tag].text;
 const tagDot = (tag: Tag) => TAG_STYLES[tag].dot;
 
-/* Print-style crop marks on the corners of each plate frame. */
-const CropMarks = () => (
-  <>
-    <span aria-hidden="true" className="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l border-t border-accent opacity-60" />
-    <span aria-hidden="true" className="pointer-events-none absolute right-1.5 top-1.5 h-2.5 w-2.5 border-r border-t border-accent opacity-60" />
-    <span aria-hidden="true" className="pointer-events-none absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b border-l border-accent opacity-60" />
-    <span aria-hidden="true" className="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b border-r border-accent opacity-60" />
-  </>
-);
+/* Discipline spine colour — the folder's coloured edge. */
+const SPINE: Record<Tag, string> = {
+  Research: 'bg-tagResearch',
+  'AI / ML': 'bg-tagSystems',
+  Web: 'bg-tagWeb',
+  Hardware: 'bg-tagHardware',
+};
 
-/* Circular ink-stamp seal carrying the project's status. */
-const StatusSeal = ({ status }: { status: string }) => (
-  <div className="relative flex h-24 w-24 -rotate-12 items-center justify-center rounded-full border-2 border-accent opacity-90 transition-transform duration-700 ease-out group-hover:-rotate-6 sm:h-28 sm:w-28">
-    <span aria-hidden="true" className="absolute inset-1.5 rounded-full border border-dashed border-accent opacity-70" />
-    <span className="px-3 text-center font-body text-[10px] uppercase leading-snug tracking-[0.18em] text-accent">
-      {status}
-    </span>
-  </div>
-);
+/* An archive-folder specimen card. No illustration stands in for artwork that
+   doesn't exist — the record itself is the object: a coloured discipline
+   spine, a watermarked plate numeral, and the entry set as a catalogue sheet. */
+const PlateCard = ({ project }: { project: Project }) => (
+  <article
+    data-card
+    id={project.id}
+    className="rail-card group w-[82vw] shrink-0 snap-center sm:w-[24rem] lg:w-[26rem]"
+  >
+    <div className="rail-card-inner relative flex h-full flex-col border border-hairline bg-panel">
+      {/* Discipline spine — grows from the top as the card centres */}
+      <span
+        aria-hidden="true"
+        className={`card-spine absolute left-0 top-0 h-full w-[3px] ${SPINE[project.tag]}`}
+      />
 
-const Plate = ({ project, index }: { project: Project; index: number }) => {
-  const { ref, visible } = useScrollReveal<HTMLElement>(0.2);
-  const flipped = index % 2 === 1;
+      {/* Catalogue number, hung vertically up the spine gutter like a
+          folder tab — keeps the head of the card clear for the title. */}
+      <span aria-hidden="true" className="card-folio absolute bottom-6 left-0 flex w-10 justify-center">
+        <span className="font-body text-[10px] uppercase tracking-[0.28em] text-muted [writing-mode:vertical-rl] rotate-180">
+          {project.no}
+        </span>
+      </span>
 
-  return (
-    <article
-      id={project.id}
-      ref={ref}
-      data-inview={visible ? 'true' : 'false'}
-      className="group scroll-mt-24 py-10 sm:py-12"
-    >
-      <div className="grid grid-cols-1 items-start gap-x-10 gap-y-6 sm:grid-cols-12">
-        {/* Plate frame */}
-        <div className={`sm:col-span-5 ${flipped ? 'sm:order-2' : ''}`}>
-          <div className="imgframe relative border border-hairline bg-panel p-3">
-            <CropMarks />
-            <div data-wipe style={delay(0.1)}>
-              <div className="plate-hatch relative flex aspect-[4/3] items-center justify-center overflow-hidden">
-                <span className="absolute left-3 top-1.5 select-none font-display text-2xl italic text-muted opacity-60">
-                  {project.numeral}
-                </span>
-                <StatusSeal status={project.status} />
-              </div>
-            </div>
-          </div>
-          <div data-reveal style={delay(0.45)} className="mt-2 flex items-center justify-between gap-2">
-            <p className="font-body text-xs italic text-muted">Plate {project.numeral}</p>
-            <p className="font-body text-[10px] uppercase tracking-[0.14em] text-muted">
-              Figure on release
-            </p>
-          </div>
+      {/* Plate numeral, watermarked into the sheet */}
+      <span
+        aria-hidden="true"
+        className="card-numeral pointer-events-none absolute right-5 top-1 select-none font-display text-[4.5rem] italic leading-none text-ink"
+      >
+        {project.numeral}
+      </span>
+
+      <div className="relative flex h-full flex-col py-6 pl-12 pr-6">
+        {/* Head: discipline and year only — the number lives on the spine */}
+        <div className="flex items-baseline gap-3">
+          <span className={`flex items-center gap-1.5 font-body text-xs uppercase tracking-[0.14em] ${tagText(project.tag)}`}>
+            <span aria-hidden="true" className={`card-dot inline-block h-1.5 w-1.5 rounded-full ${tagDot(project.tag)}`} />
+            {project.tag}
+          </span>
+          {project.year && (
+            <span className="ml-auto font-body text-xs text-muted">{project.year}</span>
+          )}
         </div>
 
-        {/* Entry text */}
-        <div className={`sm:col-span-7 ${flipped ? 'sm:order-1' : ''}`}>
-          <div data-reveal style={delay(0.15)} className="flex items-baseline gap-4">
-            <span className="font-body text-xs uppercase tracking-[0.18em] text-accent">
-              {project.no}
+        <span aria-hidden="true" className="card-rule mt-3 block h-px w-full bg-hairline" />
+
+        <h3 className="mt-4 font-display text-[1.375rem] leading-[1.18] text-ink">
+          {project.title}
+        </h3>
+
+        <p className="mt-3.5 line-clamp-4 font-body text-[0.84rem] leading-relaxed text-muted">
+          {project.summary}
+        </p>
+
+        {/* Current state as a margin note, not another labelled row */}
+        <p className="card-note mt-4 border-l border-hairline pl-3 font-body text-[0.82rem] italic leading-relaxed text-muted">
+          {project.state}
+        </p>
+
+        {/* Deliverables ledger */}
+        <div className="mt-5">
+          {project.deliverables.map((d) =>
+            d.href ? (
+              <a
+                key={d.label}
+                href={d.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="deliv-row group/row flex items-baseline py-1 font-body text-xs no-underline"
+              >
+                <span className="uppercase tracking-[0.16em] text-ink">{d.label}</span>
+                <span aria-hidden="true" className="leader mx-3 flex-1 border-b border-dotted border-hairline" />
+                <span className="flex items-center gap-1 italic text-muted transition-colors duration-300 group-hover/row:text-accent">
+                  {d.state}
+                  <ArrowUpRight
+                    size={11}
+                    className="transition-transform duration-300 ease-out group-hover/row:-translate-y-0.5 group-hover/row:translate-x-0.5"
+                  />
+                </span>
+              </a>
+            ) : (
+              <div key={d.label} className="deliv-row flex items-baseline py-1 font-body text-xs">
+                <span className="uppercase tracking-[0.16em] text-ink">{d.label}</span>
+                <span aria-hidden="true" className="leader mx-3 flex-1 border-b border-dotted border-hairline" />
+                <span className="italic text-muted">{d.state}</span>
+              </div>
+            )
+          )}
+        </div>
+
+        {/* Foot: stack, and the status as a struck label */}
+        <div className="mt-auto pt-6">
+          <span aria-hidden="true" className="card-rule block h-px w-full bg-hairline" />
+          <div className="mt-3 flex items-end justify-between gap-3">
+            <p className="font-body text-[10px] uppercase leading-relaxed tracking-[0.16em] text-muted">
+              {project.stack.join('  ·  ')}
+            </p>
+            <span className="card-stamp shrink-0 border border-accent px-2 py-0.5 font-body text-[9px] uppercase tracking-[0.16em] text-accent">
+              {project.status}
             </span>
-            <span className={`flex items-center gap-1.5 font-body text-xs uppercase tracking-[0.14em] ${tagText(project.tag)}`}>
-              <span aria-hidden="true" className={`inline-block h-1.5 w-1.5 rounded-full ${tagDot(project.tag)}`} />
-              {project.tag}
-            </span>
-            {project.year && (
-              <span className="ml-auto font-body text-xs text-muted">{project.year}</span>
-            )}
           </div>
-
-          <h3 className="mt-3 font-display text-xl leading-snug text-ink sm:text-2xl">
-            <span data-wipe style={delay(0.25)}>{project.title}</span>
-          </h3>
-
-          <p data-reveal style={delay(0.35)} className="mt-3 max-w-lg font-body text-sm leading-relaxed text-muted sm:text-base">
-            {project.summary}
-          </p>
-
-          <p data-reveal style={delay(0.42)} className="mt-4 max-w-lg font-body text-sm text-muted">
-            <span className="mr-2 font-body text-xs uppercase tracking-[0.16em] text-accent">
-              Current state
-            </span>
-            <em>{project.state}</em>
-          </p>
-
-          {/* Deliverables ledger: label … state, with dotted leaders.
-              Rows with an href are live links. */}
-          <div data-reveal style={delay(0.5)} className="mt-5 max-w-sm">
-            {project.deliverables.map((d) =>
-              d.href ? (
-                <a
-                  key={d.label}
-                  href={d.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/row flex items-baseline py-1 font-body text-xs no-underline"
-                >
-                  <span className="uppercase tracking-[0.16em] text-ink">{d.label}</span>
-                  <span aria-hidden="true" className="mx-3 flex-1 border-b border-dotted border-hairline" />
-                  <span className="flex items-center gap-1 italic text-muted transition-colors duration-300 group-hover/row:text-accent">
-                    {d.state}
-                    <ArrowUpRight
-                      size={11}
-                      className="transition-transform duration-300 ease-out group-hover/row:-translate-y-0.5 group-hover/row:translate-x-0.5"
-                    />
-                  </span>
-                </a>
-              ) : (
-                <div key={d.label} className="flex items-baseline py-1 font-body text-xs">
-                  <span className="uppercase tracking-[0.16em] text-ink">{d.label}</span>
-                  <span aria-hidden="true" className="mx-3 flex-1 border-b border-dotted border-hairline" />
-                  <span className="italic text-muted">{d.state}</span>
-                </div>
-              )
-            )}
-          </div>
-
-          <p data-reveal style={delay(0.58)} className="mt-5 font-body text-xs uppercase tracking-[0.16em] text-muted">
-            {project.stack.join('  ·  ')}
-          </p>
         </div>
       </div>
-    </article>
-  );
-};
+    </div>
+  </article>
+);
 
 const Projects = () => {
   const header = useScrollReveal<HTMLDivElement>(0.1);
   const index = useScrollReveal<HTMLDivElement>(0.15);
   const closing = useScrollReveal<HTMLDivElement>(0.3);
+
+  const railRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  /* Scroll-driven state: proximity of each card to the rail centre drives its
+     lift / scale / ink density, plus the counter and progress rule. One
+     transform write per frame, rAF-throttled. */
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const rr = rail.getBoundingClientRect();
+      const centre = rr.left + rr.width / 2;
+      const cards = rail.querySelectorAll<HTMLElement>('[data-card]');
+      let best = 0;
+      let bestD = Infinity;
+
+      cards.forEach((card, i) => {
+        const cr = card.getBoundingClientRect();
+        const off = cr.left + cr.width / 2 - centre;
+        const d = Math.abs(off);
+        if (d < bestD) {
+          bestD = d;
+          best = i;
+        }
+        if (!reduce) {
+          // --p: proximity to the centre (0..1) — how "read" a card is.
+          // --s: which side it sits on (-1..1) — lets cards turn away from
+          // the reader like leaves in a drawer instead of all scaling alike.
+          // Wide falloff so the drawer recedes gradually across several cards
+          // rather than snapping every distant plate to the same flat pose.
+          const p = Math.max(0, 1 - d / (rr.width * 0.95));
+          const s = Math.max(-1, Math.min(1, off / (rr.width * 0.95)));
+          card.style.setProperty('--p', p.toFixed(3));
+          card.style.setProperty('--s', s.toFixed(3));
+        }
+      });
+
+      const max = rail.scrollWidth - rail.clientWidth;
+      setActive(best);
+      setAtStart(rail.scrollLeft <= 2);
+      setAtEnd(rail.scrollLeft >= max - 2);
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    rail.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      rail.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  /* Vertical wheel drives the rail sideways while there is rail left to
+     travel; at either end the page takes the scroll back so nothing traps. */
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const max = rail.scrollWidth - rail.clientWidth;
+      if ((e.deltaY < 0 && rail.scrollLeft <= 0) || (e.deltaY > 0 && rail.scrollLeft >= max - 1)) {
+        return;
+      }
+      e.preventDefault();
+      rail.scrollLeft = Math.max(0, Math.min(max, rail.scrollLeft + e.deltaY));
+    };
+
+    rail.addEventListener('wheel', onWheel, { passive: false });
+    return () => rail.removeEventListener('wheel', onWheel);
+  }, []);
+
+  /* Drag the drawer with a mouse. Touch keeps its native momentum scroll. */
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    let down = false;
+    let moved = false;
+    let startX = 0;
+    let startLeft = 0;
+
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'touch' || (e.target as Element).closest('a')) return;
+      down = true;
+      moved = false;
+      startX = e.clientX;
+      startLeft = rail.scrollLeft;
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 3) moved = true;
+      rail.scrollLeft = startLeft - dx;
+    };
+    const onUp = () => {
+      down = false;
+    };
+    // Swallow the click that ends a drag so links don't fire mid-pull.
+    const onClick = (e: MouseEvent) => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+        moved = false;
+      }
+    };
+
+    rail.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    rail.addEventListener('click', onClick, true);
+    return () => {
+      rail.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      rail.removeEventListener('click', onClick, true);
+    };
+  }, []);
+
+  const scrollToCard = useCallback((i: number) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const card = rail.querySelectorAll<HTMLElement>('[data-card]')[i];
+    if (!card) return;
+    const rr = rail.getBoundingClientRect();
+    const cr = card.getBoundingClientRect();
+    const delta = cr.left + cr.width / 2 - (rr.left + rr.width / 2);
+    rail.scrollTo({ left: rail.scrollLeft + delta, behavior: 'smooth' });
+  }, []);
+
+  const step = useCallback(
+    (dir: number) => scrollToCard(Math.min(projects.length - 1, Math.max(0, active + dir))),
+    [active, scrollToCard]
+  );
 
   return (
     <Section id="projects" className="relative">
@@ -399,7 +536,7 @@ const Projects = () => {
         </h2>
       </div>
 
-      {/* Index of works */}
+      {/* Index of works — doubles as the rail's table of contents */}
       <div
         ref={index.ref}
         data-inview={index.visible ? 'true' : 'false'}
@@ -412,9 +549,13 @@ const Projects = () => {
         <ul className="pl-4">
           {projects.map((p, i) => (
             <li key={p.id} data-reveal style={delay(0.12 + i * 0.05)}>
-              <a
-                href={`#${p.id}`}
-                className="ledger-row grid grid-cols-[3rem_1fr_auto] items-baseline gap-3 border-b border-hairline py-3.5 font-body no-underline sm:grid-cols-[3rem_1fr_auto_6rem]"
+              <button
+                type="button"
+                onClick={() => scrollToCard(i)}
+                aria-label={`Show ${p.title}`}
+                className={`ledger-row grid w-full grid-cols-[3rem_1fr_auto] items-baseline gap-3 border-b border-hairline py-3.5 text-left font-body transition-colors duration-300 sm:grid-cols-[3rem_1fr_auto_6rem] ${
+                  active === i ? 'is-current' : ''
+                }`}
               >
                 <span className="ledger-num text-sm text-muted">{p.no.replace('No. ', '')}</span>
                 <span className="text-sm text-ink sm:text-base">{p.title}</span>
@@ -422,24 +563,98 @@ const Projects = () => {
                   {p.tag}
                 </span>
                 <span className="text-right text-xs italic text-muted">{p.statusShort}</span>
-              </a>
+              </button>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Plates */}
-      <div className="mt-6 divide-y divide-[color:var(--border)] sm:mt-8">
-        {projects.map((p, i) => (
-          <Plate key={p.id} project={p} index={i} />
-        ))}
+      {/* ── The plan chest: a horizontal drawer of plates ──────────────── */}
+      <div className="rail-bleed mt-14 sm:mt-16">
+        {/* Rail controls, aligned to the text column */}
+        <Container className="flex items-center gap-4">
+          <span className="shrink-0 font-display text-lg italic text-accent">
+            {projects[active].numeral}
+          </span>
+          <span className="shrink-0 font-body text-[10px] uppercase tracking-[0.18em] text-muted">
+            of XI
+          </span>
+
+          {/* A measuring rule: one tick per plate, the standing one marked. */}
+          <div className="mx-2 flex flex-1 items-end justify-between">
+            {projects.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => scrollToCard(i)}
+                aria-label={`Show ${p.title}`}
+                aria-current={active === i}
+                className={`tick flex h-6 flex-1 items-end justify-center ${
+                  active === i ? 'is-on' : ''
+                }`}
+              >
+                <span aria-hidden="true" className="tick-mark" />
+              </button>
+            ))}
+          </div>
+
+          <div className="flex shrink-0 gap-2">
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              disabled={atStart}
+              aria-label="Previous plate"
+              className="flex h-9 w-9 items-center justify-center border border-hairline text-ink transition-colors duration-300 hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+            >
+              <ArrowLeft size={15} />
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              disabled={atEnd}
+              aria-label="Next plate"
+              className="flex h-9 w-9 items-center justify-center border border-hairline text-ink transition-colors duration-300 hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-30"
+            >
+              <ArrowRight size={15} />
+            </button>
+          </div>
+        </Container>
+
+        <div
+          ref={railRef}
+          tabIndex={0}
+          role="region"
+          aria-label="Project plates — scroll sideways"
+          data-at-start={atStart}
+          data-at-end={atEnd}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              step(1);
+            } else if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              step(-1);
+            }
+          }}
+          className="rail mt-6 flex snap-x snap-proximity items-stretch gap-6 overflow-x-auto overscroll-x-contain pb-4 pt-2 sm:gap-8"
+        >
+          {projects.map((p) => (
+            <PlateCard key={p.id} project={p} />
+          ))}
+        </div>
+
+        <Container>
+          <p className="mt-2 font-body text-xs italic text-muted">
+            Drag, scroll, or use the arrows — the drawer runs sideways.
+          </p>
+        </Container>
       </div>
 
       {/* Closing note */}
       <div
         ref={closing.ref}
         data-inview={closing.visible ? 'true' : 'false'}
-        className="mt-4 sm:mt-6"
+        className="mt-14 sm:mt-16"
       >
         <div data-grow className="h-px bg-hairline" />
         <p data-reveal style={delay(0.15)} className="mt-6 font-body text-sm italic text-muted">

@@ -4,7 +4,9 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const details = [
   { label: 'Degree', value: 'B.Tech Computer Engineering, AI/ML' },
-  { label: 'Focus', value: 'Multi agent systems, applied ML' },
+  // Comma list with no conjunction, matching the other fields. The non-breaking
+  // space keeps "data science" whole so the value can't orphan a word.
+  { label: 'Focus', value: 'AI, ML, data science' },
   { label: 'Location', value: 'Mumbai, India' },
   { label: 'Status', value: 'Open to internships and collaborations' },
 ];
