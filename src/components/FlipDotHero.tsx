@@ -55,6 +55,30 @@ const FlipDotHero = () => {
     let frameId = 0;
     let t = 0;
     let nextWave = 4;
+    let visible = true;
+
+    // Fill-colour lookup: building an rgba() string per dot per frame (thousands
+    // of allocations/sec, forever, even scrolled off-screen) was the actual
+    // source of reported cursor lag elsewhere on the page — it was competing
+    // with the cursor's own rAF for main-thread frame budget. Bucket opacity
+    // into a fixed palette computed once (and only rebuilt on a theme change,
+    // detected via a cheap string compare) instead of allocating every frame.
+    const LUT_STEPS = 64;
+    let lutInk = '';
+    let lutFill: string[] = [];
+    let lutFillAnti: string[] = [];
+    let lutStroke = '';
+    function buildLut() {
+      lutInk = inkRef.current;
+      lutFill = new Array(LUT_STEPS);
+      lutFillAnti = new Array(LUT_STEPS);
+      for (let i = 0; i < LUT_STEPS; i++) {
+        const sc = i / (LUT_STEPS - 1);
+        lutFill[i] = `rgba(${lutInk},${(0.5 + sc * 0.5).toFixed(3)})`;
+        lutFillAnti[i] = `rgba(${lutInk},${(0.06 + (1 - sc) * 0.26).toFixed(3)})`;
+      }
+      lutStroke = `rgba(${lutInk},0.35)`;
+    }
 
     function pickCell(width: number) {
       // Dot pitch. Denser than a coarse grid so each letter is built from
@@ -169,6 +193,17 @@ const FlipDotHero = () => {
     }
 
     function step() {
+      // Skip all physics and drawing while scrolled off-screen. The loop still
+      // reschedules itself (cheap) so it resumes instantly on scroll-back,
+      // but stops burning frame budget the moment it isn't visible — which is
+      // most of the time a visitor spends reading the rest of the page.
+      if (!visible) {
+        frameId = requestAnimationFrame(step);
+        return;
+      }
+
+      if (lutInk !== inkRef.current) buildLut();
+
       t += 0.016;
       if (CONFIG.idleWaves && t > nextWave) {
         nextWave = t + 7 + Math.random() * 6;
@@ -182,6 +217,7 @@ const FlipDotHero = () => {
       const strength = CONFIG.flipStrength;
       const r2 = cursorRadius * cursorRadius;
       const speed = Math.min(24, Math.abs(mouse.vx) + Math.abs(mouse.vy));
+      const nRipples = ripples.length;
 
       for (let j = 0; j < dots.length; j++) {
         const d = dots[j];
@@ -192,11 +228,20 @@ const FlipDotHero = () => {
           const kick = (1 - Math.sqrt(d2) / cursorRadius) * (0.1 + speed * 0.02) * strength;
           d.v += d.target === 1 ? -kick : kick;
         }
-        for (let k = 0; k < ripples.length; k++) {
+        for (let k = 0; k < nRipples; k++) {
           const rp = ripples[k];
           const rdx = d.x - rp.x;
           const rdy = d.y - rp.y;
-          const rd = Math.sqrt(rdx * rdx + rdy * rdy);
+          // Cheap squared-distance bound before the sqrt below: a dot can only
+          // be inside the 26px band if it falls within [r-26, r+26] of the
+          // ripple centre. For thousands of dots against a thin ring this
+          // rules out the overwhelming majority without ever calling sqrt.
+          const rdSq = rdx * rdx + rdy * rdy;
+          const outer = rp.r + 26;
+          if (rdSq > outer * outer) continue;
+          const inner = rp.r - 26;
+          if (inner > 0 && rdSq < inner * inner) continue;
+          const rd = Math.sqrt(rdSq);
           const band = Math.abs(rd - rp.r);
           if (band < 26) {
             const rk = (1 - band / 26) * 0.22 * strength;
@@ -221,16 +266,15 @@ const FlipDotHero = () => {
         const sc = Math.abs(cs);
         const ink = cs < 0;
         const lift = Math.abs(Math.sin(a * Math.PI)) * cell * 0.1;
+        const lutIdx = Math.round(sc * (LUT_STEPS - 1));
         ctx!.beginPath();
         ctx!.ellipse(p.x, p.y - lift, Math.max(0.6, R * sc), R, 0, 0, Math.PI * 2);
-        ctx!.fillStyle = ink
-          ? `rgba(${inkRef.current},${(0.5 + sc * 0.5).toFixed(3)})`
-          : `rgba(${inkRef.current},${(0.06 + (1 - sc) * 0.26).toFixed(3)})`;
+        ctx!.fillStyle = ink ? lutFill[lutIdx] : lutFillAnti[lutIdx];
         ctx!.fill();
         if (sc < 0.45) {
           ctx!.beginPath();
           ctx!.ellipse(p.x, p.y - lift, Math.max(0.5, R * sc) + 0.6, R, 0, 0, Math.PI * 2);
-          ctx!.strokeStyle = `rgba(${inkRef.current},0.35)`;
+          ctx!.strokeStyle = lutStroke;
           ctx!.lineWidth = 0.8;
           ctx!.stroke();
         }
@@ -244,6 +288,15 @@ const FlipDotHero = () => {
       resizeTimer = window.setTimeout(build, 120);
     }
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    observer.observe(wrap);
+
+    buildLut();
     build();
     window.addEventListener('resize', onResize);
     wrap.addEventListener('pointermove', onPointerMove);
@@ -254,6 +307,7 @@ const FlipDotHero = () => {
     return () => {
       cancelAnimationFrame(frameId);
       window.clearTimeout(resizeTimer);
+      observer.disconnect();
       window.removeEventListener('resize', onResize);
       wrap.removeEventListener('pointermove', onPointerMove);
       wrap.removeEventListener('pointerleave', onPointerLeave);

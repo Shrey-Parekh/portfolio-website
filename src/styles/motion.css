@@ -82,6 +82,14 @@
   color: var(--accent);
 }
 
+/* Wordmark: the SP monogram stamps like the ledger numbers on hover/focus,
+   so the header's own identity mark uses the same tactile motion language
+   as the catalogue pages instead of a plain colour fade. */
+.group:hover .brand-mark,
+.group:focus-visible .brand-mark {
+  animation: stamp 0.45s var(--ease-stamp);
+}
+
 /* Day / night toggle: a placard flip, not an instant text swap */
 .toggle-flip {
   position: relative;
@@ -155,242 +163,313 @@
   }
 }
 
-/* ── Projects rail: a plan-chest drawer that runs sideways ──────────────
-   Cards react to their distance from the rail centre via --p (0..1), set
-   once per frame in JS. Everything here is transform/opacity only. */
-.rail-bleed {
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  width: 100vw;
+/* ── Projects: catalogue and plate ─────────────────────────────────────
+   These works have no photography, so the composition carries the page: a
+   quiet standing index on the left, and the selected work set large beside
+   it. The index never moves; only the plate changes. */
+
+.works {
+  margin-top: 3rem;
 }
 
-.rail {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  /* No `scroll-behavior: smooth` here on purpose — it fights the wheel
-     handler's direct scrollLeft writes and makes the wheel feel dead. The
-     arrow buttons opt into smoothing per-call via scrollTo({behavior}). */
-  /* Align the first card with the text column, then bleed to the edge. */
-  padding-left: max(1.5rem, calc((100vw - 56rem) / 2 + 1.5rem));
-  padding-right: max(1.5rem, calc((100vw - 56rem) / 2 + 1.5rem));
-}
+@media (min-width: 1024px) {
+  .works {
+    display: grid;
+    grid-template-columns: minmax(11rem, 15rem) 1fr;
+    gap: 4rem;
+    align-items: start;
+    margin-top: 4rem;
+  }
 
-@media (min-width: 640px) {
-  .rail {
-    padding-left: max(2.5rem, calc((100vw - 56rem) / 2 + 2.5rem));
-    padding-right: max(2.5rem, calc((100vw - 56rem) / 2 + 2.5rem));
+  /* The index stands still while the plate scrolls beside it. */
+  .works-index {
+    position: sticky;
+    top: 6.5rem;
   }
 }
 
-.rail::-webkit-scrollbar {
-  display: none;
+/* ── The standing index ─────────────────────────────────────────────── */
+.idx-group + .idx-group {
+  margin-top: 1.75rem;
 }
 
-.rail:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+.idx-group-name {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  margin-bottom: 0.5rem;
 }
 
-.rail-card {
-  --p: 0;
-  --s: 0;
+.idx-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* The drawer has depth: cards turn away from the reader as they leave the
-   centre rather than all shrinking identically, so the rail reads as leaves
-   in a chest instead of a row of tiles. */
-.rail {
-  perspective: 1600px;
-  perspective-origin: 50% 45%;
+.idx-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.32rem 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--muted);
+  transition: color 0.3s var(--ease-out);
 }
 
-.rail-card-inner {
-  transform: translateY(calc((1 - var(--p)) * 14px)) translateZ(calc(var(--p) * 46px - 46px))
-    rotateY(calc(var(--s) * -9deg));
-  opacity: calc(0.4 + var(--p) * 0.6);
-  transition: transform 0.6s var(--ease-out), opacity 0.6s var(--ease-out),
-    border-color 0.45s var(--ease-out);
-  will-change: transform;
-}
-
-/* The discipline spine unrolls from the top as the card centres. */
-.rail-card .card-spine {
-  transform-origin: top;
-  transform: scaleY(calc(0.12 + var(--p) * 0.88));
-  opacity: calc(0.35 + var(--p) * 0.65);
-  transition: transform 0.8s var(--ease-out), opacity 0.6s var(--ease-out);
-}
-
-/* The plate numeral sits in the sheet like a watermark and drifts into place. */
-.rail-card .card-numeral {
-  opacity: calc(0.05 + var(--p) * 0.07);
-  transform: translateX(calc((1 - var(--p)) * 12px));
-  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
-}
-
-/* Hairline rules draw out from the left. */
-.rail-card .card-rule {
+/* A rule that grows out of the margin to point at the standing work. */
+.idx-rule {
+  flex-shrink: 0;
+  width: 0.85rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.25);
   transform-origin: left;
-  transform: scaleX(calc(0.18 + var(--p) * 0.82));
-  transition: transform 0.85s var(--ease-out);
+  opacity: 0.4;
+  transition: transform 0.35s var(--ease-out), opacity 0.35s var(--ease-out);
 }
 
-/* The status label settles square as its card centres. */
-.rail-card .card-stamp {
-  transform: rotate(calc(-3deg + var(--p) * 3deg));
-  opacity: calc(0.55 + var(--p) * 0.45);
-  transition: transform 0.7s var(--ease-out), opacity 0.6s var(--ease-out);
+/* Below the sidebar breakpoint the index is a tappable stacked list, not a
+   quiet standing margin note, so it needs to read and hit like one: a bigger
+   label with real letter-forms instead of a thin spread, and a proper touch
+   target on each row (was 34px tall, under the 44px minimum). */
+@media (max-width: 1023px) {
+  .idx-group-name {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+  }
+
+  .idx-row {
+    min-height: 44px;
+    padding: 0.6rem 0;
+    font-size: 1rem;
+    gap: 0.75rem;
+  }
+
+  .idx-rule {
+    width: 1.1rem;
+  }
 }
 
-/* The folio number on the spine gutter fades up with the card. */
-.rail-card .card-folio {
-  opacity: calc(0.25 + var(--p) * 0.75);
-  transition: opacity 0.6s var(--ease-out);
+.idx-row:hover {
+  color: var(--fg);
 }
 
-/* The margin note's rule grows down beside it. */
-.rail-card .card-note {
-  border-left-color: var(--border);
-  transition: border-color 0.5s var(--ease-out);
+.idx-row:hover .idx-rule {
+  transform: scaleX(0.7);
+  opacity: 0.7;
 }
 
-/* ── Hover: the sheet is picked up ─────────────────────────────────────
-   Only meaningful on the card you're pointing at, so the rail stays calm. */
-.rail-card:hover .rail-card-inner {
-  border-color: var(--accent);
-}
-
-.rail-card:hover .card-spine {
-  width: 6px;
-}
-
-.rail-card .card-spine {
-  transition: transform 0.8s var(--ease-out), opacity 0.6s var(--ease-out),
-    width 0.35s var(--ease-out);
-}
-
-.rail-card:hover .card-numeral {
-  opacity: 0.13;
-}
-
-.rail-card:hover .card-note {
-  border-left-color: var(--accent);
-}
-
-/* The status label presses like a stamp on hover. */
-.rail-card:hover .card-stamp {
-  background: var(--accent);
-  color: var(--panel);
-}
-
-.rail-card .card-stamp {
-  transition: transform 0.7s var(--ease-out), opacity 0.6s var(--ease-out),
-    background-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
-}
-
-/* A deliverable's dotted leader inks solid when you reach for it. */
-.deliv-row .leader {
-  transition: border-color 0.3s var(--ease-out), border-bottom-style 0.3s;
-}
-
-.deliv-row:hover .leader {
-  border-bottom-style: solid;
-  border-color: var(--accent);
-}
-
-/* The discipline dot pulses out a ring as its card lands. */
-.rail-card .card-dot {
-  box-shadow: 0 0 0 calc((1 - var(--p)) * 3px) transparent;
-  transition: box-shadow 0.6s var(--ease-out);
-}
-
-/* ── Rail edges: cards dissolve at the margins instead of being guillotined,
-   and the fade lifts on whichever side has run out of drawer. */
-.rail {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 var(--fade-l, 5rem),
-    #000 calc(100% - var(--fade-r, 5rem)),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 var(--fade-l, 5rem),
-    #000 calc(100% - var(--fade-r, 5rem)),
-    transparent 100%
-  );
-}
-
-.rail[data-at-start='true'] {
-  --fade-l: 0rem;
-}
-
-.rail[data-at-end='true'] {
-  --fade-r: 0rem;
-}
-
-/* ── Tick ruler: a measuring scale, not a progress bar. Each tick is the
-   plate it stands for, and clicking one pulls that plate forward. */
-.tick-mark {
-  display: block;
-  width: 1px;
-  height: 8px;
-  background: var(--border);
-  transition: height 0.35s var(--ease-out), background-color 0.35s var(--ease-out);
-}
-
-.tick:hover .tick-mark {
-  height: 12px;
-  background: var(--muted);
-}
-
-.tick.is-on .tick-mark {
-  height: 16px;
-  background: var(--accent);
-}
-
-/* The index row matching the plate on screen keeps its ribbon out. */
-.ledger-row.is-current::before {
-  transform: scaleY(1);
-}
-
-.ledger-row.is-current .ledger-num {
+.idx-row.is-on {
   color: var(--accent);
 }
 
+.idx-row.is-on .idx-rule {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.idx-name {
+  min-width: 0;
+}
+
+/* ── The plate ──────────────────────────────────────────────────────── */
+.works-plate {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (min-width: 1024px) {
+  .works-plate {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+    min-height: 30rem;
+  }
+}
+
+.plate-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.plate-year,
+.plate-status {
+  color: var(--muted);
+}
+
+/* The one live project earns the only coloured status on the page. */
+.plate-live {
+  color: var(--accent);
+}
+
+.plate-title {
+  margin: 0.85rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4.6vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+  max-width: 18ch;
+}
+
+.plate-summary {
+  margin: 1.5rem 0 0;
+  max-width: 46ch;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.plate-spec {
+  margin-top: 2rem;
+  max-width: 34rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+.spec-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  text-decoration: none;
+}
+
+.spec-term {
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--fg);
+}
+
+.spec-leader {
+  flex: 1;
+  height: 0;
+  border-bottom: 1px dotted var(--border);
+  transition: border-color 0.3s var(--ease-out);
+}
+
+.spec-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  font-style: italic;
+  color: var(--muted);
+  transition: color 0.3s var(--ease-out);
+}
+
+.spec-arrow {
+  transition: transform 0.3s var(--ease-out);
+}
+
+.spec-row.is-link:hover .spec-value {
+  color: var(--accent);
+}
+
+.spec-row.is-link:hover .spec-leader {
+  border-bottom-color: var(--accent);
+  border-bottom-style: solid;
+}
+
+.spec-row.is-link:hover .spec-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* The stack is this work's only picture, so it is set as a field. */
+.plate-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0;
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+}
+
+.plate-stack li {
+  padding: 0 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  border-right: 1px solid var(--border);
+}
+
+.plate-stack li:first-child {
+  padding-left: 0;
+}
+
+.plate-stack li:last-child {
+  border-right: 0;
+}
+
+/* ── Changing the plate is the page's one orchestrated moment ────────── */
+@keyframes plate-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.plate > * {
+  animation: plate-in 0.5s var(--ease-out) both;
+}
+
+.plate > *:nth-child(1) { animation-delay: 0s; }
+.plate > *:nth-child(2) { animation-delay: 0.05s; }
+.plate > *:nth-child(3) { animation-delay: 0.1s; }
+.plate > *:nth-child(4) { animation-delay: 0.15s; }
+.plate > *:nth-child(5) { animation-delay: 0.2s; }
+
+@media (max-width: 639px) {
+  .spec-row {
+    flex-wrap: wrap;
+    gap: 0.1rem;
+    padding: 0.42rem 0;
+  }
+
+  .spec-leader {
+    display: none;
+  }
+
+  .spec-value {
+    flex: 1 1 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .rail {
-    scroll-behavior: auto;
+  .plate > * {
+    animation: none;
   }
 
-  .rail-card-inner {
-    transform: none;
-    opacity: 1;
-    transition: none;
-  }
-
-  .rail-card .card-spine {
-    transform: none;
-    opacity: 1;
-    transition: none;
-  }
-
-  .rail-card .card-numeral {
-    transform: none;
-    opacity: 0.08;
-    transition: none;
-  }
-
-  .rail-card .card-rule {
-    transform: none;
-    transition: none;
-  }
-
-  .rail-card .card-stamp {
-    transform: none;
-    opacity: 1;
+  .idx-row,
+  .idx-rule,
+  .spec-leader,
+  .spec-value,
+  .spec-arrow {
     transition: none;
   }
 }

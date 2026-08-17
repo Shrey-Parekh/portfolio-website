@@ -50,6 +50,32 @@ const papers: Paper[] = [
       'A computer-vision pipeline built on OpenCV and EasyOCR extracts margin-geometry features from handwritten documents — left-margin shape and top/bottom gradients — which feed multi-output SVM, Naive Bayes, and Random Forest classifiers. The manuscript is currently under journal review; the full document will appear here once it clears.',
     keywords: ['Computer vision', 'OpenCV', 'EasyOCR', 'Multi-output classification'],
   },
+  {
+    id: 'paper-3',
+    no: '03',
+    kind: 'Research paper',
+    title: 'Detecting Electronic Waste Contaminants in Wet Biodegradable Waste',
+    venue: 'Under journal review',
+    abstract:
+      'Since no dataset exists for e-waste embedded in wet biodegradable waste, and real photographs of the scenario are hard to obtain, this work builds one synthetically: e-waste objects are segmented and composited into real organic-waste imagery with colour harmonisation, contact-shadow rendering, and occlusion matching, yielding 1,500 automatically labelled images. A YOLOv8 model trained on this set reaches 72.7% mAP on synthetic validation and 89.1% detection on 46 held-out real e-waste photos, though a 12.6% false-positive rate on clean waste (reducible to 4.3% at lower recall) shows the synthetic-to-real transfer is only partial. The manuscript is currently under journal review; the full document will appear here once it clears.',
+    keywords: ['Synthetic data generation', 'Object detection', 'YOLOv8', 'Sim-to-real transfer'],
+  },
+  {
+    id: 'paper-4',
+    no: '04',
+    kind: 'Research paper',
+    title:
+      'Machine Learning-Based Crime Category Classification and Spatio-Temporal Pattern Analysis',
+    venue: 'Under journal review',
+    abstract:
+      'Builds a spatio-temporal classifier for Chicago crime incidents from 2020 to 2024, using 1,060,801 records from the City of Chicago Open Data Portal grouped into four categories, Violent, Property, Drug/Public Order, and White-Collar, from eleven district, location, and time-based features with no victim demographic inputs. Five classifiers are trained under matched unweighted and sample-weighted configurations; XGBoost performs best at 67.5% accuracy and a macro-F1 of 0.51, with ROC-AUCs of 0.88 and 0.86 on the two rarest classes, showing strong ranking even where thresholding is imprecise. The manuscript is currently under journal review; the full document will appear here once it clears.',
+    keywords: [
+      'Crime classification',
+      'Spatio-temporal analysis',
+      'XGBoost',
+      'Imbalanced classification',
+    ],
+  },
 ];
 
 /* Download chip: a live link when a PDF exists, a quiet dashed placeholder

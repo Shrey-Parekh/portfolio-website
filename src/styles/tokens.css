@@ -6,10 +6,11 @@
   --accent: #8A6A3B;
   --border: #DCD5C1;
 
-  --tag-research: #4F7A5B;
   --tag-systems: #9C4A45;
   --tag-web: #3F6E8C;
-  --tag-hardware: #8A6A8C;
+  /* Darkened from #8A6A8C: at the original value this failed WCAG AA
+     (4.11:1) as small text on --bg. */
+  --tag-hardware: #816383;
 
   --texture-blend: multiply;
   --texture-opacity: 0.05;
@@ -36,6 +37,13 @@
   --muted: #8F8677;
   --accent: #B08D57;
   --border: #3E382F;
+
+  /* These three read as small text against the dark --bg. At the light-theme
+     hex values, all three fell below WCAG AA (2.72-3.53:1 measured); these
+     are lightened, same-hue variants that clear 4.5:1. */
+  --tag-systems: #BF736E;
+  --tag-web: #558EB3;
+  --tag-hardware: #9B7D9D;
 
   --texture-blend: screen;
   --texture-opacity: 0.06;

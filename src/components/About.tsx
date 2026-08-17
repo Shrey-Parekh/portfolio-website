@@ -50,8 +50,9 @@ const About = () => {
           <div>
             <h2 className="font-display text-2xl leading-snug text-ink sm:text-3xl lg:text-[2.1rem]">
               <span data-wipe style={delay(0.15)}>
-                I build with <em className="font-display italic text-accent">curiosity</em>, and
-                unplug just as intentionally.
+                I build things because I'm{' '}
+                <em className="font-display italic text-accent">curious</em>. I unplug just as
+                deliberately.
               </span>
             </h2>
 
@@ -64,17 +65,15 @@ const About = () => {
                   I
                 </span>
                 <span className="sr-only">I</span>'m a final-year computer engineering student at
-                NMIMS MPSTME in Mumbai, and I'm all in on AI and machine learning. I love digging
-                into how things work and building systems that actually solve problems worth
-                solving. Alongside classes, I've been running campus tech chapters and helping
-                beginners write their very first lines of code — genuinely one of my favorite parts
-                of college.
+                NMIMS MPSTME in Mumbai, focused on AI and machine learning. I like figuring out
+                how something works and then building my own version of it.
               </p>
               <p className="font-body text-base leading-relaxed text-muted sm:text-lg">
-                I try not to be glued to a desk all day though. I'm big on the outdoors and will
-                jump at any excuse for something adventurous. When I'm winding down, it's usually
-                sports, some gaming, or catching F1. And I'm a serious binge-watcher — comedy,
-                sci-fi, horror, mystery thrillers, if it's good, I've probably already seen it.
+                I try not to spend all day at a desk though. I like being outdoors and staying
+                active when I can. When I'm not doing that, it's usually sports, gaming, or
+                watching F1. I also watch a lot of movies and shows, comedy, sci-fi, horror,
+                mystery thrillers, basically all of it. If it's good, I've probably already seen
+                it.
               </p>
             </div>
           </div>

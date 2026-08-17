@@ -151,18 +151,40 @@ const Nav = () => {
       }`}
     >
       <Container className="flex items-center justify-between py-4 sm:py-5">
-        <a href="#top" className="group flex items-center gap-2.5 no-underline">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-hairline transition-colors duration-300 group-hover:border-accent">
-            <span className="font-display text-[13px] italic leading-none text-accent">SP</span>
-          </span>
-          <span className="relative font-display text-lg font-semibold text-ink sm:text-xl">
-            Shrey <span className="italic text-accent">Parekh</span>
-            <span
-              aria-hidden="true"
-              className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
-            />
-          </span>
-        </a>
+        {(() => {
+          // The wordmark is the site's "go home" control. On the home page a
+          // plain hash anchor is enough (id="top" wraps every route, so a
+          // bare #top from another page would just scroll that page's own
+          // top rather than navigating anywhere) — off it, a real route Link
+          // to "/#top" is required, same cross-page pattern the nav's own
+          // hash links already use.
+          const brand = (
+            <>
+              <span className="brand-mark flex h-7 w-7 shrink-0 items-center justify-center border border-hairline transition-colors duration-300 group-hover:border-accent">
+                <span className="font-display text-[13px] italic leading-none text-accent">
+                  SP
+                </span>
+              </span>
+              <span className="relative font-display text-lg font-semibold text-ink transition-[letter-spacing] duration-300 group-hover:tracking-[0.02em] sm:text-xl">
+                Shrey <span className="italic text-accent">Parekh</span>
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
+                />
+              </span>
+            </>
+          );
+          const brandClass = 'group flex items-center gap-2.5 no-underline';
+          return isHome ? (
+            <a href="#top" className={brandClass}>
+              {brand}
+            </a>
+          ) : (
+            <Link to="/#top" className={brandClass}>
+              {brand}
+            </Link>
+          );
+        })()}
 
         <nav className="hidden items-center gap-8 font-body text-base sm:flex">
           {links.map((link) =>
