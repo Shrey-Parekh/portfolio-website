@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Nav from './components/Nav';
 import Cursor from './components/Cursor';
 import Footer from './components/Footer';
@@ -65,6 +66,7 @@ function App() {
       <TextureOverlay />
       <Cursor />
       <RouteManager />
+      <Analytics />
       <div id="top" className="relative flex min-h-screen flex-col">
         <Nav />
         <main className="flex-1">

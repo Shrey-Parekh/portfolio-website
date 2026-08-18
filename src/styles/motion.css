@@ -530,3 +530,372 @@
     transition: none;
   }
 }
+
+/* ── Blogs: the reader ─────────────────────────────────────────────────
+   Four papers as offprint sheets turned through sideways. The container is
+   built to read as paper rather than as a UI card: a masthead rule across
+   the head, a column rule dividing the metadata rail from the reading
+   column, and a stacked edge behind the sheet so it sits in a pile. */
+.reader-bleed {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+  margin-top: 3rem;
+}
+
+@media (min-width: 640px) {
+  .reader-bleed {
+    margin-top: 3.5rem;
+  }
+}
+
+.reader {
+  display: flex;
+  align-items: start;
+  gap: 2rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Room for the stacked edge behind each sheet. */
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  /* Centre the sheets so the first and last sit mid-track like any other. */
+  padding-left: max(1.5rem, calc((100vw - 52rem) / 2));
+  padding-right: max(1.5rem, calc((100vw - 52rem) / 2));
+  cursor: grab;
+}
+
+@media (min-width: 640px) {
+  .reader {
+    gap: 2.75rem;
+  }
+}
+
+.reader::-webkit-scrollbar {
+  display: none;
+}
+
+/* Snapping is suspended mid-drag so the pull stays continuous, then the
+   nearest sheet is glided back to centre on release. */
+.reader.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+.reader:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+/* ── A sheet ────────────────────────────────────────────────────────── */
+.sheet {
+  --p: 0;
+  position: relative;
+  flex: 0 0 auto;
+  width: min(86vw, 52rem);
+  scroll-snap-align: center;
+}
+
+/* Two offset hairline edges behind the sheet: it reads as one leaf off a
+   stack rather than a floating card, and gives depth without a drop shadow,
+   which this print palette has no vocabulary for. */
+.sheet::before,
+.sheet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  opacity: calc(0.25 + var(--p) * 0.35);
+  pointer-events: none;
+}
+
+.sheet::before {
+  transform: translate(6px, 6px);
+}
+
+.sheet::after {
+  transform: translate(3px, 3px);
+}
+
+/* The sheet not in hand sits back. No transition: --p is recomputed every
+   frame from scroll position, so easing it would trail the gesture. */
+.sheet-inner {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 1.25rem 1.25rem 1.5rem;
+  opacity: calc(0.4 + var(--p) * 0.6);
+}
+
+@media (min-width: 640px) {
+  .sheet-inner {
+    padding: 1.5rem 2.5rem 2.25rem;
+  }
+}
+
+/* ── Masthead ───────────────────────────────────────────────────────── */
+.sheet-masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.masthead-kind,
+.masthead-status {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+}
+
+/* The one paper that has cleared review earns the only coloured status. */
+.masthead-status.is-out {
+  color: var(--accent);
+}
+
+/* ── Offprint grid: metadata rail, column rule, reading column ───────── */
+.sheet-grid {
+  display: grid;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .sheet-grid {
+    grid-template-columns: 10rem 1fr;
+    gap: 2.5rem;
+    padding-top: 1.75rem;
+  }
+
+  /* A real column rule, the way a journal page divides its columns. */
+  .sheet-rail {
+    border-right: 1px solid var(--border);
+    padding-right: 2.5rem;
+  }
+}
+
+.sheet-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rail-folio-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.rail-folio {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 3rem;
+  line-height: 0.85;
+  color: var(--accent);
+}
+
+@media (min-width: 640px) {
+  .rail-folio {
+    font-size: 3.5rem;
+  }
+}
+
+.rail-divider {
+  height: 1px;
+  width: 2.25rem;
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.rail-label {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  margin: 0 0 0.45rem;
+}
+
+.rail-line {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--fg);
+  margin: 0;
+}
+
+.rail-keys {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rail-keys li {
+  position: relative;
+  padding-left: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* A hanging hairline instead of a bullet: quieter, and matches the rules
+   used everywhere else on the site. */
+.rail-keys li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.35rem;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Reading column ─────────────────────────────────────────────────── */
+.sheet-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3.1vw, 1.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.sheet-abstract-label {
+  margin-top: 1.5rem;
+}
+
+.sheet-abstract {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.sheet-foot {
+  margin-top: 1.75rem;
+}
+
+/* ── Gauge ──────────────────────────────────────────────────────────── */
+.reader-gauge {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.gauge-marks {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+}
+
+.gauge-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.2rem;
+  background: none;
+  border: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition: color 0.3s var(--ease-out);
+}
+
+.gauge-mark:hover {
+  color: var(--fg);
+}
+
+.gauge-mark.is-on {
+  color: var(--accent);
+}
+
+/* The rule under the standing numeral extends, so the gauge reads as a
+   measure of where you are rather than a row of dots. */
+.gauge-rule {
+  display: block;
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+  transform: scaleX(0.4);
+  transition: transform 0.35s var(--ease-out), opacity 0.35s var(--ease-out);
+}
+
+.gauge-mark:hover .gauge-rule {
+  transform: scaleX(0.7);
+  opacity: 0.7;
+}
+
+.gauge-mark.is-on .gauge-rule {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.gauge-arrows {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gauge-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  background: none;
+  transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
+}
+
+.gauge-arrow:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.gauge-arrow:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Touch targets: below the sidebar breakpoint the gauge is tapped, not
+   pointed at, so the marks need real height. */
+@media (max-width: 639px) {
+  .gauge-mark {
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .gauge-arrow {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-inner,
+  .sheet::before,
+  .sheet::after {
+    opacity: 1;
+  }
+
+  .gauge-mark,
+  .gauge-rule,
+  .gauge-arrow {
+    transition: none;
+  }
+}

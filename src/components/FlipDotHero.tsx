@@ -100,6 +100,12 @@ const FlipDotHero = () => {
     function build() {
       W = wrap!.clientWidth;
       H = wrap!.clientHeight;
+      // The wrap can briefly report zero size before layout has committed
+      // (React 18 StrictMode's double-mount in dev, or a route transition
+      // mid-flight). Bail out rather than sizing an offscreen canvas to 0,
+      // which throws on getImageData; the ResizeObserver below re-runs build
+      // the moment the element actually has real dimensions.
+      if (W <= 0 || H <= 0) return;
       canvas!.width = W * DPR;
       canvas!.height = H * DPR;
       ctx!.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -296,9 +302,15 @@ const FlipDotHero = () => {
     );
     observer.observe(wrap);
 
+    // Observes wrap directly rather than only window resize, so build() also
+    // re-runs the moment the element itself first gets real dimensions (the
+    // zero-size mount the guard above bails out of), not just on viewport
+    // resize.
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(wrap);
+
     buildLut();
     build();
-    window.addEventListener('resize', onResize);
     wrap.addEventListener('pointermove', onPointerMove);
     wrap.addEventListener('pointerleave', onPointerLeave);
     wrap.addEventListener('pointerdown', onPointerDown);
@@ -308,7 +320,7 @@ const FlipDotHero = () => {
       cancelAnimationFrame(frameId);
       window.clearTimeout(resizeTimer);
       observer.disconnect();
-      window.removeEventListener('resize', onResize);
+      resizeObserver.disconnect();
       wrap.removeEventListener('pointermove', onPointerMove);
       wrap.removeEventListener('pointerleave', onPointerLeave);
       wrap.removeEventListener('pointerdown', onPointerDown);
