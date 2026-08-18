@@ -899,3 +899,41 @@
     transition: none;
   }
 }
+
+/* ── Off the clock: run-in interests ───────────────────────────────────
+   These are not controls, so they get no box and no button affordance.
+   The underline draws from the left on hover, the same annotation gesture
+   the nav links use, which keeps the page speaking one language. */
+.interest {
+  position: relative;
+  display: inline-block;
+  transition: color 0.35s var(--ease-out);
+}
+
+.interest::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.22em;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.interest:hover {
+  color: var(--accent);
+}
+
+.interest:hover::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interest,
+  .interest::after {
+    transition: none;
+  }
+}

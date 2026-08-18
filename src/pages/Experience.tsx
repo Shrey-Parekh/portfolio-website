@@ -48,7 +48,7 @@ const experience: Role[] = [
     period: '70+ volunteer hours',
     place: 'Community service',
     points: [
-      'Taught underprivileged children the basics of website development — HTML and CSS — walking them from their first tags to their first working pages.',
+      'Taught underprivileged children the basics of website development, HTML and CSS, walking them from their first tags to their first working pages.',
       'Logged 70+ volunteer hours with the foundation, building teaching material pitched for absolute beginners.',
     ],
   },
@@ -157,7 +157,7 @@ const Experience = () => {
         aria-hidden="true"
         className="absolute -left-10 top-48 hidden font-body text-[10px] uppercase tracking-[0.3em] text-muted [writing-mode:vertical-rl] xl:block"
       >
-        Record — work & off-hours
+        Record, work & off-hours
       </span>
 
       {/* 06 — Experience */}
@@ -166,7 +166,7 @@ const Experience = () => {
 
         <h2 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
           <span data-wipe style={delay(0.15)}>
-            Where the work has taken me so far —{' '}
+            Where the work has taken me so far,{' '}
             <em className="font-display italic text-accent">and where it’s going next</em>.
           </span>
         </h2>
@@ -189,7 +189,7 @@ const Experience = () => {
                 className="absolute left-2 top-1.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full border border-dashed border-accent bg-surface"
               />
               <p className="font-body text-sm italic text-muted">
-                Open to the next one — internships and collaborations from Jan 2027.
+                Open to the next one. Internships and collaborations from Jan 2027.
               </p>
             </div>
           </div>
@@ -209,20 +209,27 @@ const Experience = () => {
           </div>
         </div>
 
-        {/* Off the clock */}
-        <div data-reveal style={delay(0.5)} className="mt-12">
-          <p className="font-body text-xs uppercase tracking-[0.18em] text-accent">Off the clock</p>
-          <div data-grow style={delay(0.15)} className="mt-3 h-px bg-hairline" />
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            {interests.map((tag) => (
-              <span
-                key={tag}
-                className="border border-hairline px-3 py-1.5 font-body text-sm text-ink transition-colors duration-300 hover:border-accent"
-              >
-                {tag}
-              </span>
-            ))}
+        {/* Off the clock: set as a run-in colophon line rather than boxed tags.
+            Five bordered chips read as UI controls you could click; these are
+            just things he does, so they are set in the display face and divided
+            by hairlines, the way a masthead runs its credits. */}
+        <div data-reveal style={delay(0.5)} className="mt-14">
+          <div className="flex items-center gap-4">
+            <p className="shrink-0 font-body text-xs uppercase tracking-[0.18em] text-accent">
+              Off the clock
+            </p>
+            <div data-grow style={delay(0.15)} className="h-px flex-1 bg-hairline" />
           </div>
+          <ul className="mt-6 flex flex-wrap items-baseline gap-x-5 gap-y-3">
+            {interests.map((tag, i) => (
+              <li key={tag} className="flex items-baseline gap-x-5">
+                {i > 0 && <span aria-hidden="true" className="h-3.5 w-px bg-hairline" />}
+                <span className="interest font-display text-lg italic leading-none text-ink sm:text-xl">
+                  {tag}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
@@ -230,7 +237,7 @@ const Experience = () => {
       <div className="mt-16 sm:mt-20">
         <div data-grow className="h-px bg-hairline" />
         <p className="mt-6 font-body text-sm italic text-muted">
-          The record grows as the work does — roles updated as they change.
+          The record grows as the work does. Roles are updated as they change.
         </p>
       </div>
     </Section>
