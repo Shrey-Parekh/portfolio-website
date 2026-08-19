@@ -653,7 +653,7 @@
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.24em;
-  color: var(--muted);
+  color: var(--muted-strong);
 }
 
 /* The one paper that has cleared review earns the only coloured status. */
@@ -720,7 +720,7 @@
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: var(--muted);
+  color: var(--muted-strong);
   margin: 0 0 0.45rem;
 }
 
@@ -742,9 +742,9 @@
   position: relative;
   padding-left: 0.75rem;
   font-family: var(--font-body);
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   line-height: 1.6;
-  color: var(--muted);
+  color: var(--muted-strong);
 }
 
 /* A hanging hairline instead of a bullet: quieter, and matches the rules
@@ -763,26 +763,58 @@
 .sheet-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.3rem, 3.1vw, 1.85rem);
-  line-height: 1.15;
+  font-size: clamp(1.35rem, 3.1vw, 1.9rem);
+  line-height: 1.18;
   letter-spacing: -0.01em;
   color: var(--fg);
+  /* Keeps a long title from dropping a single orphan word onto its last line. */
+  text-wrap: balance;
 }
 
-.sheet-abstract-label {
-  margin-top: 1.5rem;
+/* "Abstract" with a rule running off to the sheet edge, so the label reads as
+   a section head rather than another metadata field. */
+.sheet-abstract-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0.85rem;
 }
 
+.sheet-abstract-head .rail-label {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.abstract-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* The abstract is the substance of the sheet, so it is set as body copy, not
+   as caption text: full foreground colour, and held to about 68 characters a
+   line. It was running to 89, well past the point where the eye loses the
+   return sweep on a 600-character block. */
 .sheet-abstract {
   margin: 0;
+  max-width: 27em;
   font-family: var(--font-body);
-  font-size: 0.92rem;
-  line-height: 1.75;
-  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--fg);
+  hyphens: auto;
+  text-wrap: pretty;
+}
+
+.abstract-lead {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.05em;
+  color: var(--accent);
 }
 
 .sheet-foot {
-  margin-top: 1.75rem;
+  margin-top: 1.9rem;
 }
 
 /* ── Gauge ──────────────────────────────────────────────────────────── */
@@ -934,6 +966,162 @@
 @media (prefers-reduced-motion: reduce) {
   .interest,
   .interest::after {
+    transition: none;
+  }
+}
+
+/* ── Contact: the postcard ─────────────────────────────────────────────
+   The stamp occupies real space at the head of the address column, so
+   nothing can end up underneath it. The postmark is offset inside the
+   block's own box rather than hanging outside it. */
+.stamp-block {
+  position: relative;
+  flex-shrink: 0;
+  /* Room for the postmark, including the extra its rotation adds to the box. */
+  padding-left: 2.5rem;
+}
+
+.stamp {
+  display: block;
+  width: 3.5rem;
+  height: 4rem;
+  padding: 0.2rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transform: rotate(3deg);
+  transform-origin: center;
+}
+
+.stamp-face {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  border: 1px dashed var(--accent);
+}
+
+.stamp-mono {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.stamp-city {
+  font-family: var(--font-body);
+  font-size: 0.44rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted-strong);
+}
+
+/* The postmark strikes across the stamp's lower-left corner, the way a real
+   cancellation runs off the edge of the stamp onto the card. */
+.postmark {
+  position: absolute;
+  left: 0.4rem;
+  top: 0.75rem;
+  display: flex;
+  height: 3.4rem;
+  width: 3.4rem;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-12deg);
+  opacity: 0.42;
+}
+
+.postmark-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+}
+
+.postmark-text {
+  font-family: var(--font-body);
+  font-size: 0.42rem;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+/* Franking: the stamp presses down, then the cancellation is struck over it.
+   Reuses the same stamp easing the catalogue numerals and wordmark use. */
+[data-inview='true'] .stamp {
+  animation: frank 0.55s var(--ease-stamp) 0.5s both;
+}
+
+[data-inview='true'] .postmark {
+  animation: strike 0.5s var(--ease-out) 0.95s both;
+}
+
+@keyframes frank {
+  0% {
+    opacity: 0;
+    transform: rotate(3deg) translateY(-6px) scale(1.08);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(3deg) translateY(1px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(3deg) translateY(0) scale(1);
+  }
+}
+
+@keyframes strike {
+  0% {
+    opacity: 0;
+    transform: rotate(-30deg) scale(1.45);
+  }
+  100% {
+    opacity: 0.42;
+    transform: rotate(-12deg) scale(1);
+  }
+}
+
+/* ── Channel rows ───────────────────────────────────────────────────── */
+/* The dotted leader draws across to the handle instead of appearing whole,
+   which gives the two rows the ruled-form feel the rest of the card has. */
+.chan-leader {
+  align-self: center;
+  height: 1px;
+  background-image: linear-gradient(to right, var(--border) 0 2px, transparent 2px 5px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.85s var(--ease-out), background-image 0.3s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+
+[data-inview='true'] .chan-leader {
+  transform: scaleX(1);
+}
+
+.chan-row:hover .chan-leader {
+  background-image: linear-gradient(to right, var(--accent) 0 2px, transparent 2px 5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-inview='true'] .stamp,
+  [data-inview='true'] .postmark {
+    animation: none;
+  }
+
+  .postmark {
+    opacity: 0.42;
+  }
+
+  .chan-leader {
+    transform: scaleX(1);
     transition: none;
   }
 }

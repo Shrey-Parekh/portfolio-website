@@ -9,6 +9,7 @@ export default {
         panel: 'var(--panel)',
         ink: 'var(--fg)',
         muted: 'var(--muted)',
+        mutedStrong: 'var(--muted-strong)',
         accent: 'var(--accent)',
         hairline: 'var(--border)',
         tagSystems: 'var(--tag-systems)',

@@ -258,7 +258,7 @@ const Plate = ({ project }: { project: Project }) => (
       </span>
     </div>
 
-    <h3 className="plate-title">{project.title}</h3>
+    <h2 className="plate-title">{project.title}</h2>
 
     <p className="plate-summary">{project.summary}</p>
 
@@ -330,13 +330,13 @@ const Projects = () => {
           <span data-grow style={delay(0.1)} className="ml-2 h-px flex-1 bg-hairline" />
         </div>
 
-        <h2 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
+        <h1 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
           <span data-wipe style={delay(0.15)}>
             Ten works, grouped by{' '}
             <em className="font-display italic text-accent">what they actually are</em>. Pick one
             from the index.
           </span>
-        </h2>
+        </h1>
       </div>
 
       {/* Catalogue and plate: the index stays put, the work changes beside it. */}

@@ -103,10 +103,10 @@ const RoleEntry = ({ role, d }: { role: Role; d: number }) => (
     </span>
 
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-      <h3 className="font-display text-lg text-ink sm:text-xl">
+      <h2 className="font-display text-lg text-ink sm:text-xl">
         <span className="italic text-accent">{role.role}</span>
         <span className="text-muted"> · {role.org}</span>
-      </h3>
+      </h2>
       <span className="font-body text-xs uppercase tracking-[0.14em] text-muted">
         {role.period}
         {role.place ? ` · ${role.place}` : ''}
@@ -164,12 +164,12 @@ const Experience = () => {
       <div ref={exp.ref} data-inview={exp.visible ? 'true' : 'false'}>
         <Kicker num="06" label="Experience" />
 
-        <h2 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
+        <h1 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
           <span data-wipe style={delay(0.15)}>
             Where the work has taken me so far,{' '}
             <em className="font-display italic text-accent">and where it’s going next</em>.
           </span>
-        </h2>
+        </h1>
 
         <div className="relative mt-10 sm:mt-12">
           {/* the timeline rule */}

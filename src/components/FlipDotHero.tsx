@@ -333,7 +333,16 @@ const FlipDotHero = () => {
       className="relative min-h-[540px] w-full overflow-hidden"
       style={{ height: '100dvh', background: 'var(--bg)' }}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full cursor-crosshair" />
+      {/* The name is painted into the canvas, which is invisible to crawlers
+          and screen readers alike, so the page carried no h1 at all. This is
+          the text equivalent of what the dots spell out. */}
+      <h1 className="sr-only">Shrey Parekh</h1>
+
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full cursor-crosshair"
+      />
 
       <div className="pointer-events-none absolute inset-x-0 top-10 text-center font-body text-xs uppercase tracking-[0.3em] text-accent sm:top-14 sm:text-sm">
         Portfolio
@@ -341,7 +350,7 @@ const FlipDotHero = () => {
 
       <div className="pointer-events-none absolute inset-x-0 bottom-[max(2rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-2 px-6 text-center sm:bottom-12 sm:gap-3">
         <p className="max-w-xs font-body text-base text-ink sm:max-w-none sm:text-lg">
-          Projects · skills · interests — everything I make and love
+          Projects · skills · interests. Everything I make and love
         </p>
         <small className="font-body text-xs uppercase tracking-[0.22em] text-muted sm:text-sm">
           Sweep across · click for a ripple

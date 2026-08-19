@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Nav from './components/Nav';
 import Cursor from './components/Cursor';
@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Blogs from './pages/Blogs';
 import Experience from './pages/Experience';
+import NotFound from './pages/NotFound';
 import { ThemeProvider } from './context/ThemeContext';
 
 const PAGE_TITLES: Record<string, string> = {
@@ -24,7 +25,7 @@ function RouteManager() {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = PAGE_TITLES[location.pathname] ?? 'Shrey Parekh — Portfolio';
+    document.title = PAGE_TITLES[location.pathname] ?? 'Page not found — Shrey Parekh';
   }, [location.pathname]);
 
   useEffect(() => {
@@ -68,14 +69,17 @@ function App() {
       <RouteManager />
       <Analytics />
       <div id="top" className="relative flex min-h-screen flex-col">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         <Nav />
-        <main className="flex-1">
+        <main id="main" tabIndex={-1} className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/experience" element={<Experience />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

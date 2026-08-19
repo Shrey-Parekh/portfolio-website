@@ -3,6 +3,10 @@
   --panel: #FFFEFA;
   --fg: #1F3324;
   --muted: #6B6B5F;
+  /* For small metadata labels sitting on --panel. In light mode --muted
+     already clears AA (5.34:1), so this matches it; the dark theme overrides
+     it, where plain --muted does not. */
+  --muted-strong: #6B6B5F;
   --accent: #8A6A3B;
   --border: #DCD5C1;
 
@@ -35,6 +39,9 @@
   --panel: #2B2723;
   --fg: #D8CDBC;
   --muted: #8F8677;
+  /* Plain --muted measures 4.12:1 on --panel here, under the 4.5:1 floor.
+     Same hue, lifted until it clears (4.69:1 on panel, 5.19:1 on bg). */
+  --muted-strong: #989082;
   --accent: #B08D57;
   --border: #3E382F;
 

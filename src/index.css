@@ -39,6 +39,39 @@
     border-radius: 1px;
   }
 
+  /* Skip link: first stop in the tab order, off-canvas until focused, so a
+     keyboard user can jump the nav without it showing for anyone else.
+     Positioned rather than clipped, since a clipped link cannot be focused. */
+  .skip-link {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 100;
+    transform: translate(-50%, -120%);
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--accent);
+    background: var(--panel);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  /* :focus, not :focus-visible. The link is off-canvas and unclickable, so
+     tab is the only way to reach it, and :focus-visible does not match a
+     programmatic focus() call. */
+  .skip-link:focus {
+    transform: translate(-50%, 0.75rem);
+  }
+
+  /* The target takes focus programmatically; it should not draw a ring. */
+  main:focus {
+    outline: none;
+  }
+
   ::-webkit-scrollbar {
     width: 8px;
   }

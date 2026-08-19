@@ -123,6 +123,20 @@ const DownloadChip = ({ paper }: { paper: Paper }) =>
     </span>
   );
 
+/* The opening words are set in small caps so the block has a way in. Splitting
+   on words rather than characters keeps it safe for any abstract length. */
+const Abstract = ({ text }: { text: string }) => {
+  const words = text.split(' ');
+  const lead = words.slice(0, 3).join(' ');
+  const rest = words.slice(3).join(' ');
+
+  return (
+    <p className="sheet-abstract">
+      <span className="abstract-lead">{lead}</span> {rest}
+    </p>
+  );
+};
+
 /* One paper, set as an offprint: a masthead across the head of the sheet,
    metadata in a rail down the left the way it sits on a printed paper, and
    the title and abstract in the reading column beside it. */
@@ -166,9 +180,12 @@ const Sheet = ({ paper }: { paper: Paper }) => (
         </div>
 
         <div className="sheet-body">
-          <h3 className="sheet-title">{paper.title}</h3>
-          <p className="rail-label sheet-abstract-label">Abstract</p>
-          <p className="sheet-abstract">{paper.abstract}</p>
+          <h2 className="sheet-title">{paper.title}</h2>
+          <div className="sheet-abstract-head">
+            <p className="rail-label">Abstract</p>
+            <span aria-hidden="true" className="abstract-rule" />
+          </div>
+          <Abstract text={paper.abstract} />
           <div className="sheet-foot">
             <DownloadChip paper={paper} />
           </div>
@@ -347,13 +364,13 @@ const Blogs = () => {
           <span data-grow style={delay(0.1)} className="ml-2 h-px flex-1 bg-hairline" />
         </div>
 
-        <h2 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
+        <h1 className="max-w-2xl font-display text-xl leading-snug text-ink sm:text-2xl lg:text-[1.7rem]">
           <span data-wipe style={delay(0.15)}>
             Four papers, one to a sheet.{' '}
             <em className="font-display italic text-accent">Turn through them</em>, take the full
             document with you.
           </span>
-        </h2>
+        </h1>
       </div>
 
       <div className="reader-bleed">

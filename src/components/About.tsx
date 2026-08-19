@@ -31,11 +31,22 @@ const About = () => {
           <div className="mx-auto w-44 sm:mx-0 sm:mt-1 sm:w-full">
             <div data-wipe style={delay(0.05)}>
               <div className="imgframe relative">
-                <img
-                  src="/portrait.png"
-                  alt="Shrey Parekh"
-                  className="w-full grayscale-[8%] sepia-[6%] contrast-[1.02]"
-                />
+                {/* WebP at 480w covers a 2.4x display; the PNG stays as the
+                    fallback for anything that cannot decode it. Intrinsic
+                    dimensions are declared so the frame reserves its space and
+                    the surrounding text does not jump when the image lands. */}
+                <picture>
+                  <source srcSet="/portrait.webp" type="image/webp" />
+                  <img
+                    src="/portrait.png"
+                    alt="Shrey Parekh"
+                    width={480}
+                    height={720}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-auto w-full grayscale-[8%] sepia-[6%] contrast-[1.02]"
+                  />
+                </picture>
                 <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-hairline" />
               </div>
             </div>
