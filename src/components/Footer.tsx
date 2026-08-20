@@ -29,7 +29,7 @@ const Footer = () => {
               Shrey <span className="italic text-accent">Parekh</span>
             </Link>
             <p className="mt-3 max-w-xs font-body text-sm leading-relaxed text-muted">
-              Multi agent systems, applied machine learning, and things built with curiosity.
+              Artificial intelligence, machine learning, and things built with curiosity.
             </p>
             <p className="mt-4 font-body text-xs uppercase tracking-[0.16em] text-muted">
               Mumbai, India · IST

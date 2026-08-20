@@ -1125,3 +1125,102 @@
     transition: none;
   }
 }
+
+/* ── Projects: the live-site band ──────────────────────────────────────
+   Most of these works can only be read about. The two that are deployed can
+   actually be used, which is worth more than any description on the page, so
+   the address gets its own band instead of a row in the spec list. */
+.live-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+  padding: 0.9rem 1.25rem;
+  border: 1px solid var(--accent);
+  background: var(--panel);
+  text-decoration: none;
+  transition: background-color 0.35s var(--ease-out);
+}
+
+.live-band:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+}
+
+.live-band-text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.live-band-label {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+}
+
+/* The URL is the point of the band, so it is set as content, not as a caption. */
+.live-band-url {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: var(--fg);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.35s var(--ease-out);
+}
+
+.live-band:hover .live-band-url {
+  color: var(--accent);
+}
+
+.live-band-arrow {
+  flex-shrink: 0;
+  color: var(--accent);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.live-band:hover .live-band-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* A truncated address is useless, so on narrow screens the band gives up some
+   type size and padding rather than ellipsing the URL. */
+@media (max-width: 639px) {
+  .live-band {
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .live-band-url {
+    font-size: 0.9rem;
+  }
+}
+
+/* Index marker: a small accent rule after the name, so someone scanning the
+   catalogue can tell which two works they can actually open. */
+.idx-live {
+  margin-left: 0.5rem;
+  height: 5px;
+  width: 5px;
+  flex-shrink: 0;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+}
+
+.idx-row.is-on .idx-live,
+.idx-row:hover .idx-live {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-band,
+  .live-band-url,
+  .live-band-arrow {
+    transition: none;
+  }
+}

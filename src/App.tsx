@@ -12,12 +12,55 @@ import Experience from './pages/Experience';
 import NotFound from './pages/NotFound';
 import { ThemeProvider } from './context/ThemeContext';
 
-const PAGE_TITLES: Record<string, string> = {
-  '/': 'Shrey Parekh — AI/ML Engineer & Developer Portfolio',
-  '/projects': 'Projects — Shrey Parekh',
-  '/blogs': 'Blogs — Shrey Parekh',
-  '/experience': 'Experience — Shrey Parekh',
+const SITE_URL = 'https://shrey-parekh.vercel.app';
+
+interface PageMeta {
+  title: string;
+  description: string;
+}
+
+/* Every route is served the same index.html, so without this each page would
+   report the home page's description, canonical and Open Graph tags. Search
+   engines then see four near-duplicate pages instead of four distinct ones. */
+const PAGE_META: Record<string, PageMeta> = {
+  '/': {
+    title: 'Shrey Parekh — AI/ML Engineer & Developer Portfolio',
+    description:
+      'Shrey Parekh is a final-year computer engineering student in Mumbai, India, specialising in artificial intelligence and machine learning. Portfolio of AI and ML projects, research papers, experience, and résumé.',
+  },
+  '/projects': {
+    title: 'Projects — AI, Machine Learning & Web Builds | Shrey Parekh',
+    description:
+      'Ten engineering projects by Shrey Parekh across AI and machine learning, web, and hardware: security analysis pipelines, retrieval-augmented systems, realtime multiplayer platforms, and robotics. Live demos and source code.',
+  },
+  '/blogs': {
+    title: 'Research Papers — Machine Learning & Computer Vision | Shrey Parekh',
+    description:
+      'Research papers by Shrey Parekh on applied machine learning, computer vision, and reinforcement learning, covering traffic signal control, handwriting analysis, e-waste detection, and crime classification.',
+  },
+  '/experience': {
+    title: 'Experience & Leadership — Shrey Parekh',
+    description:
+      'The professional and extracurricular record of Shrey Parekh: engineering experience, AI and machine learning work, and student committee leadership at NMIMS MPSTME, Mumbai.',
+  },
 };
+
+const NOT_FOUND_META: PageMeta = {
+  title: 'Page not found — Shrey Parekh',
+  description: 'That page is not in the index. Browse the projects, papers, and experience instead.',
+};
+
+/* Meta tags live in index.html, so they are updated in place rather than
+   rendered: one helper for <meta>, one for the canonical <link>. */
+function setMeta(selector: string, content: string) {
+  const el = document.head.querySelector<HTMLMetaElement>(selector);
+  if (el) el.setAttribute('content', content);
+}
+
+function setCanonical(href: string) {
+  const el = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (el) el.setAttribute('href', href);
+}
 
 /* On route change: keep the document title in sync, and scroll to the hash
    target if there is one (the section mounts with the route), else to the top. */
@@ -25,7 +68,26 @@ function RouteManager() {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = PAGE_TITLES[location.pathname] ?? 'Page not found — Shrey Parekh';
+    const meta = PAGE_META[location.pathname] ?? NOT_FOUND_META;
+    const url = `${SITE_URL}${location.pathname === '/' ? '/' : location.pathname}`;
+
+    document.title = meta.title;
+    setMeta('meta[name="description"]', meta.description);
+    setMeta('meta[property="og:title"]', meta.title);
+    setMeta('meta[property="og:description"]', meta.description);
+    setMeta('meta[property="og:url"]', url);
+    setMeta('meta[name="twitter:title"]', meta.title);
+    setMeta('meta[name="twitter:description"]', meta.description);
+    setCanonical(url);
+
+    /* A missing page must not invite indexing under its own URL. */
+    const robots = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    if (robots) {
+      robots.setAttribute(
+        'content',
+        PAGE_META[location.pathname] ? 'index, follow' : 'noindex, follow'
+      );
+    }
   }, [location.pathname]);
 
   useEffect(() => {

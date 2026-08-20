@@ -31,6 +31,10 @@ interface Project {
   status: string;
   statusShort: string;
   state: string;
+  /* A deployed, clickable build. Only some works have one, and it is the most
+     valuable thing on the plate when it exists, so it is its own field rather
+     than a deliverable row. */
+  live?: string;
   summary: string;
   stack: string[];
   deliverables: Deliverable[];
@@ -139,6 +143,7 @@ const projects: Project[] = [
     status: 'Complete',
     statusShort: 'Complete',
     state: 'Full-stack platform with live rooms, state sync, and in-game chat over WebSockets.',
+    live: 'https://game-arena-kappa.vercel.app',
     summary:
       'A full-stack multiplayer gaming platform on React (Vite) and a Node / Express backend, with WebSockets carrying room creation, game-state synchronization, and live player chat. The server is organized around controllers, socket event handlers, and a room manager for scalable concurrent play, backed by PostgreSQL.',
     stack: ['React', 'Node.js', 'Express', 'PostgreSQL', 'WebSockets', 'Tailwind'],
@@ -157,6 +162,7 @@ const projects: Project[] = [
     status: 'Complete',
     statusShort: 'Complete',
     state: 'Full-stack events & community portal, deployed on Vercel over a cloud backend.',
+    live: 'https://iet-portal.vercel.app',
     summary:
       'A full-stack portal for college events and community, built with React + TypeScript (Vite) on a Node / Express and Supabase backend. Authentication, PostgreSQL, and React Query handle data and state; the interface leans on Tailwind, Radix UI, and Framer Motion, deployed through Vercel.',
     stack: ['React', 'TypeScript', 'Supabase', 'Express', 'React Query', 'Tailwind'],
@@ -246,6 +252,28 @@ const SpecRow = ({ term, value, href }: { term: string; value: string; href?: st
   );
 };
 
+/* A deployed build gets an address band rather than a button: the URL is the
+   point, so it is set large in the display face and the label sits above it,
+   the way a specimen plate carries its reference. */
+const LiveBand = ({ href }: { href: string }) => {
+  const host = new URL(href).hostname.replace(/^www\./, '');
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="live-band group/live"
+    >
+      <span className="live-band-text">
+        <span className="live-band-label">Live site</span>
+        <span className="live-band-url">{host}</span>
+      </span>
+      <ArrowUpRight size={18} className="live-band-arrow" />
+    </a>
+  );
+};
+
 /* The plate: the selected work, set large. Keyed on project id so React
    remounts it and the entrance animation replays on every change. */
 const Plate = ({ project }: { project: Project }) => (
@@ -261,6 +289,8 @@ const Plate = ({ project }: { project: Project }) => (
     <h2 className="plate-title">{project.title}</h2>
 
     <p className="plate-summary">{project.summary}</p>
+
+    {project.live && <LiveBand href={project.live} />}
 
     <div className="plate-spec">
       <SpecRow term="State" value={project.state} />
@@ -361,6 +391,12 @@ const Projects = () => {
                     >
                       <span aria-hidden="true" className="idx-rule" />
                       <span className="idx-name">{p.title.split(':')[0]}</span>
+              {p.live && (
+                <>
+                  <span aria-hidden="true" className="idx-live" />
+                  <span className="sr-only">(has a live site)</span>
+                </>
+              )}
                     </button>
                   </li>
                 ))}

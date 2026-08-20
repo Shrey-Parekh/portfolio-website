@@ -12,7 +12,7 @@
     <title>Shrey Parekh — AI/ML Engineer & Developer Portfolio</title>
     <meta
       name="description"
-      content="Shrey Parekh — final-year computer engineering student (AI/ML) in Mumbai, India. Multi-agent reinforcement learning, applied machine learning, RAG systems, and full-stack builds. Portfolio, projects, publications, and résumé."
+      content="Shrey Parekh is a final-year computer engineering student in Mumbai, India, specialising in artificial intelligence and machine learning. Portfolio of AI and ML projects, research papers, experience, and résumé."
     />
     <meta name="author" content="Shrey Parekh" />
     <meta name="robots" content="index, follow" />
@@ -27,11 +27,12 @@
 
     <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack, ...) -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_IN" />
     <meta property="og:site_name" content="Shrey Parekh" />
     <meta property="og:title" content="Shrey Parekh — AI/ML Engineer & Developer Portfolio" />
     <meta
       property="og:description"
-      content="Multi-agent reinforcement learning, applied machine learning, and full-stack builds — a catalogue of work by Shrey Parekh."
+      content="A catalogue of AI and machine learning work by Shrey Parekh: projects, research papers, and full-stack builds."
     />
     <meta property="og:url" content="https://shrey-parekh.vercel.app/" />
     <meta property="og:image" content="https://shrey-parekh.vercel.app/og-image.png" />
@@ -44,34 +45,105 @@
     <meta name="twitter:title" content="Shrey Parekh — AI/ML Engineer & Developer Portfolio" />
     <meta
       name="twitter:description"
-      content="Multi-agent reinforcement learning, applied machine learning, and full-stack builds — a catalogue of work by Shrey Parekh."
+      content="A catalogue of AI and machine learning work by Shrey Parekh: projects, research papers, and full-stack builds."
     />
     <meta name="twitter:image" content="https://shrey-parekh.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="Shrey Parekh — Portfolio" />
 
-    <!-- Structured data: helps search engines associate this site with the
-         person "Shrey Parekh" rather than just the generic phrase. -->
+    <!-- Structured data: a graph rather than a bare Person, so search
+         engines can distinguish the site, the person it is about, and the
+         individual pages, and associate all of them with "Shrey Parekh". -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Shrey Parekh",
-        "url": "https://shrey-parekh.vercel.app/",
-        "image": "https://shrey-parekh.vercel.app/portrait.png",
-        "jobTitle": "AI/ML Engineer",
-        "description": "Final-year computer engineering student (AI/ML) building multi-agent systems, applied machine learning, and full-stack software.",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Mumbai",
-          "addressCountry": "IN"
-        },
-        "alumniOf": {
-          "@type": "CollegeOrUniversity",
-          "name": "SVKM's NMIMS MPSTME"
-        },
-        "sameAs": [
-          "https://github.com/Shrey-Parekh",
-          "https://www.linkedin.com/in/shrey-parekh-599a44276/"
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://shrey-parekh.vercel.app/#website",
+            "url": "https://shrey-parekh.vercel.app/",
+            "name": "Shrey Parekh",
+            "description": "Portfolio of Shrey Parekh, an artificial intelligence and machine learning engineer based in Mumbai, India.",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://shrey-parekh.vercel.app/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://shrey-parekh.vercel.app/#person",
+            "name": "Shrey Parekh",
+            "givenName": "Shrey",
+            "familyName": "Parekh",
+            "url": "https://shrey-parekh.vercel.app/",
+            "image": "https://shrey-parekh.vercel.app/portrait.png",
+            "jobTitle": "AI/ML Engineer",
+            "email": "mailto:shreyparekh3@gmail.com",
+            "description": "Final-year computer engineering student in Mumbai, India, building artificial intelligence, machine learning, and full-stack software.",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Mumbai",
+              "addressRegion": "Maharashtra",
+              "addressCountry": "IN"
+            },
+            "alumniOf": {
+              "@type": "CollegeOrUniversity",
+              "name": "SVKM's NMIMS MPSTME"
+            },
+            "knowsAbout": [
+              "Artificial Intelligence",
+              "Machine Learning",
+              "Deep Learning",
+              "Computer Vision",
+              "Reinforcement Learning",
+              "Retrieval-Augmented Generation",
+              "Natural Language Processing",
+              "Full-Stack Web Development",
+              "Python",
+              "React",
+              "TypeScript"
+            ],
+            "sameAs": [
+              "https://github.com/Shrey-Parekh",
+              "https://www.linkedin.com/in/shrey-parekh-599a44276/"
+            ]
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://shrey-parekh.vercel.app/#profilepage",
+            "url": "https://shrey-parekh.vercel.app/",
+            "name": "Shrey Parekh — AI/ML Engineer & Developer Portfolio",
+            "isPartOf": {
+              "@id": "https://shrey-parekh.vercel.app/#website"
+            },
+            "about": {
+              "@id": "https://shrey-parekh.vercel.app/#person"
+            },
+            "primaryImageOfPage": "https://shrey-parekh.vercel.app/og-image.png"
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shrey-parekh.vercel.app/projects#page",
+            "url": "https://shrey-parekh.vercel.app/projects",
+            "name": "Projects",
+            "isPartOf": {
+              "@id": "https://shrey-parekh.vercel.app/#website"
+            },
+            "about": {
+              "@id": "https://shrey-parekh.vercel.app/#person"
+            }
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shrey-parekh.vercel.app/blogs#page",
+            "url": "https://shrey-parekh.vercel.app/blogs",
+            "name": "Research Papers",
+            "isPartOf": {
+              "@id": "https://shrey-parekh.vercel.app/#website"
+            },
+            "about": {
+              "@id": "https://shrey-parekh.vercel.app/#person"
+            }
+          }
         ]
       }
     </script>
