@@ -160,11 +160,19 @@ const Nav = () => {
           // hash links already use.
           const brand = (
             <>
-              <span className="brand-mark flex h-7 w-7 shrink-0 items-center justify-center border border-hairline transition-colors duration-300 group-hover:border-accent">
-                <span className="font-display text-[13px] italic leading-none text-accent">
-                  SP
+              {/* S roman over P italic with a slash through the join, inside a
+                  hairline square: the same monogram the favicons carry. */}
+              <span className="brand-mark relative flex h-8 w-8 shrink-0 items-center justify-center border border-accent transition-colors duration-300 group-hover:border-accent">
+                <span className="font-display text-[15px] leading-none text-accent">S</span>
+                <span className="-ml-[3px] font-display text-[15px] italic leading-none text-accent">
+                  P
                 </span>
+                <span
+                  aria-hidden="true"
+                  className="absolute left-1/2 top-1/2 h-px w-[21px] -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-accent"
+                />
               </span>
+              <span aria-hidden="true" className="h-6 w-px shrink-0 bg-hairline" />
               <span className="relative font-display text-lg font-semibold text-ink transition-[letter-spacing] duration-300 group-hover:tracking-[0.02em] sm:text-xl">
                 Shrey <span className="italic text-accent">Parekh</span>
                 <span
