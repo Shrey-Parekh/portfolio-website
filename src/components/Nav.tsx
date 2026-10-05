@@ -162,8 +162,8 @@ const Nav = () => {
             <>
               {/* S roman over P italic with a slash through the join, inside a
                   hairline square: the same monogram the favicons carry. */}
-              <span className="brand-mark relative flex h-8 w-8 shrink-0 items-center justify-center border border-accent transition-colors duration-300 group-hover:border-accent">
-                <span className="font-display text-[15px] leading-none text-accent">S</span>
+              <span className="brand-mark relative flex h-8 w-8 shrink-0 items-center justify-center border border-hairline transition-colors duration-300 group-hover:border-accent">
+                <span className="font-display text-[15px] leading-none text-ink">S</span>
                 <span className="-ml-[3px] font-display text-[15px] italic leading-none text-accent">
                   P
                 </span>
@@ -174,7 +174,7 @@ const Nav = () => {
               </span>
               <span aria-hidden="true" className="h-6 w-px shrink-0 bg-hairline" />
               <span className="relative font-display text-lg font-semibold text-ink transition-[letter-spacing] duration-300 group-hover:tracking-[0.02em] sm:text-xl">
-                Shrey <span className="italic text-accent">Parekh</span>
+                Shrey <span className="font-script text-[1.4em] font-normal leading-none tracking-normal text-accent">Parekh</span>
                 <span
                   aria-hidden="true"
                   className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"

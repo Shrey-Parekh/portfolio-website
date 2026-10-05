@@ -19,6 +19,7 @@ export default {
       fontFamily: {
         display: ['"Playfair Display"', 'serif'],
         body: ['"EB Garamond"', 'serif'],
+        script: ['"Pinyon Script"', '"Playfair Display"', 'cursive'],
       },
       borderRadius: {
         sm: 'var(--radius-sm)',

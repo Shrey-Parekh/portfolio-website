@@ -26,7 +26,7 @@ const Footer = () => {
           {/* Masthead */}
           <div>
             <Link to="/#top" className="font-display text-lg font-semibold text-ink no-underline">
-              Shrey <span className="italic text-accent">Parekh</span>
+              Shrey <span className="font-script text-[1.4em] font-normal leading-none tracking-normal text-accent">Parekh</span>
             </Link>
             <p className="mt-3 max-w-xs font-body text-sm leading-relaxed text-muted">
               Artificial intelligence, machine learning, and things built with curiosity.
