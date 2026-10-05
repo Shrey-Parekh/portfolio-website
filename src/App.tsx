@@ -36,7 +36,7 @@ const PAGE_META: Record<string, PageMeta> = {
   '/blogs': {
     title: 'Research Papers — Machine Learning & Computer Vision | Shrey Parekh',
     description:
-      'Research papers by Shrey Parekh on applied machine learning, computer vision, and reinforcement learning, covering traffic signal control, handwriting analysis, e-waste detection, and crime classification.',
+      'Research papers by Shrey Parekh on applied machine learning, computer vision, and reinforcement learning, covering e-waste detection, traffic signal control, crime classification, and handwriting analysis.',
   },
   '/experience': {
     title: 'Experience & Leadership — Shrey Parekh',

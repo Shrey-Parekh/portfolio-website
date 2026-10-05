@@ -37,44 +37,40 @@ const papers: Paper[] = [
     numeral: 'I',
     kind: 'Research paper',
     title:
-      'VehicleClassAttention: Learning PCU-Weighted Signal Control for Heterogeneous Urban Traffic',
-    venue: 'ICCCNet, United Kingdom',
-    year: '2026',
-    status: 'Accepted',
+      'Detection of Electronic Waste Contamination in Wet Biodegradable Waste Using Segmentation and Explainable AI',
+    status: 'Under review',
     abstract:
-      'Proposes VehicleClassAttention (VCA), a learnable attention module that embeds IRC:106-1990 passenger-car-unit priors into a graph attention network for traffic signal control. On a 9-intersection SUMO grid, the full policy cuts queues by 14.9% against the strongest classical baseline; ablations across four architectures and three seeds isolate VCA’s independent 5.5% queue reduction at only 400 additional parameters.',
+      'No photographs of electronic waste mixed into organic waste exist to train a detector, so this work trains one on synthetic data: 54 screened e-waste cut-outs are composited into real organic-waste photographs with colour harmonisation, grain matching, contact shadows, and partial burial, with labels derived from the pixels left visible. A YOLOv11s detector trained only on these composites, tested on 387 withheld real e-waste photographs and 746 clean organic ones, flags 84.5% of e-waste images while alerting on 10% of clean loads, rising to 97.2% for circuit boards. In paired ablations, attention (CBAM) lowered detection by 11.9 to 16.3 points, and an eleven-model ensemble added a non-significant 1.8 points at 11.8 times the latency.',
     keywords: [
-      'Multi-agent RL',
-      'Graph attention networks',
-      'Traffic signal control',
-      'PCU weighting',
+      'Synthetic training data',
+      'Object detection',
+      'Compost contamination',
+      'Municipal solid waste',
     ],
-    pdf: '/vca-paper.pdf',
-    size: '1.4 MB',
   },
   {
     id: 'paper-2',
     numeral: 'II',
     kind: 'Research paper',
-    title: 'Handwriting Margin Geometry: Computer-Vision Feature Extraction',
-    status: 'Under review',
+    title:
+      'VehicleClassAttention: Learning PCU-Weighted Signal Control for Heterogeneous Indian Urban Traffic',
+    venue: 'ICCCNet, United Kingdom',
+    year: '2026',
+    status: 'Accepted',
     abstract:
-      'A computer-vision pipeline built on OpenCV and EasyOCR extracts margin-geometry features from handwritten documents, namely left-margin shape and top/bottom gradients, which feed multi-output SVM, Naive Bayes, and Random Forest classifiers. The manuscript is currently under journal review; the full document will appear here once it clears.',
-    keywords: ['Computer vision', 'OpenCV', 'EasyOCR', 'Multi-output classification'],
+      'Indian urban traffic mixes two-wheelers, auto-rickshaws, cars, and buses with very different Passenger Car Unit (PCU) equivalents, yet existing reinforcement learning controllers treat every vehicle the same. VehicleClassAttention (VCA) is a learnable attention module that weights vehicle classes by their PCU-scaled congestion contribution, initialised from IRC:106-1990 priors and integrated into a graph attention network for multi-intersection control. On a SUMO 9-intersection grid calibrated to Indian traffic, GAT-DQN with VCA reaches an average queue of 10.57 PCU, 14.9% below the best classical baseline, with 5.7% higher throughput; ablation attributes 12.5% to graph structure, 1.8% to attention, and a further 5.5% to VCA.',
+    keywords: [
+      'Deep reinforcement learning',
+      'Graph attention networks',
+      'Traffic signal control',
+      'Passenger car units',
+    ],
+    pdf: '/vca-paper.pdf',
+    size: '1.4 MB',
   },
   {
     id: 'paper-3',
     numeral: 'III',
-    kind: 'Research paper',
-    title: 'Detecting Electronic Waste Contaminants in Wet Biodegradable Waste',
-    status: 'Under review',
-    abstract:
-      'Since no dataset exists for e-waste embedded in wet biodegradable waste, and real photographs of the scenario are hard to obtain, this work builds one synthetically: e-waste objects are segmented and composited into real organic-waste imagery with colour harmonisation, contact-shadow rendering, and occlusion matching, yielding 1,500 automatically labelled images. A YOLOv8 model trained on this set reaches 72.7% mAP on synthetic validation and 89.1% detection on 46 held-out real e-waste photos, though a 12.6% false-positive rate on clean waste (reducible to 4.3% at lower recall) shows the synthetic-to-real transfer is only partial.',
-    keywords: ['Synthetic data generation', 'Object detection', 'YOLOv8', 'Sim-to-real transfer'],
-  },
-  {
-    id: 'paper-4',
-    numeral: 'IV',
     kind: 'Research paper',
     title:
       'Machine Learning-Based Crime Category Classification and Spatio-Temporal Pattern Analysis',
@@ -83,9 +79,25 @@ const papers: Paper[] = [
       'Builds a spatio-temporal classifier for Chicago crime incidents from 2020 to 2024, using 1,060,801 records from the City of Chicago Open Data Portal grouped into four categories, Violent, Property, Drug/Public Order, and White-Collar, from eleven district, location, and time-based features with no victim demographic inputs. Five classifiers are trained under matched unweighted and sample-weighted configurations; XGBoost performs best at 67.5% accuracy and a macro-F1 of 0.51, with ROC-AUCs of 0.88 and 0.86 on the two rarest classes, showing strong ranking even where thresholding is imprecise.',
     keywords: [
       'Crime classification',
-      'Spatio-temporal analysis',
-      'XGBoost',
-      'Imbalanced classification',
+      'Class imbalance',
+      'Gradient boosting',
+      'Spatio-temporal features',
+    ],
+  },
+  {
+    id: 'paper-4',
+    numeral: 'IV',
+    kind: 'Research paper',
+    title:
+      'Learning Behavioral Patterns from Handwritten Document Margins Using OCR-Derived Spatial Features',
+    status: 'Under review',
+    abstract:
+      'Graphological practice reads the margins of a handwritten page as indicators of behavioral patterns; this paper tests whether those patterns, as annotated by a practitioner, can be learned from margin features derived by optical character recognition. Word bounding boxes give 18 binary spatial features per page, including left- and right-edge drift profiles and fitted first- and last-line slopes. On 29 practitioner-annotated pages, a knowledge-guided weight matrix reaches 70.0% mean accuracy over seven patterns against a 58.6% majority-class rate (permutation p < 0.001), on par with the best of six trained classifiers, while automatically detected margins fall to 56.7%. The results concern agreement with annotations, not psychological validity.',
+    keywords: [
+      'Handwriting analysis',
+      'Optical character recognition',
+      'Document layout analysis',
+      'Multi-label classification',
     ],
   },
 ];
