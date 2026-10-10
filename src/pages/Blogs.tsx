@@ -74,9 +74,10 @@ const papers: Paper[] = [
     kind: 'Research paper',
     title:
       'Machine Learning-Based Crime Category Classification and Spatio-Temporal Pattern Analysis',
-    status: 'Under review',
+    venue: 'NSHM Minds, IEEE 2026',
+    status: 'Accepted',
     abstract:
-      'Builds a spatio-temporal classifier for Chicago crime incidents from 2020 to 2024, using 1,060,801 records from the City of Chicago Open Data Portal grouped into four categories, Violent, Property, Drug/Public Order, and White-Collar, from eleven district, location, and time-based features with no victim demographic inputs. Five classifiers are trained under matched unweighted and sample-weighted configurations; XGBoost performs best at 67.5% accuracy and a macro-F1 of 0.51, with ROC-AUCs of 0.88 and 0.86 on the two rarest classes, showing strong ranking even where thresholding is imprecise.',
+      'Classifies 1,060,801 Chicago crime incidents from 2020 to 2024 into four categories, Violent, Property, Drug/Public Order, and White-Collar, from eleven district, location, and time-based features with no victim demographic inputs. Five classical classifiers and three neural baselines (a multilayer perceptron, an FT-Transformer, and a graph convolutional network over district adjacency) are trained under matched unweighted and sample-weighted configurations. XGBoost performs best at 67.5% accuracy and a macro-F1 of 0.51, significantly ahead of every other tested model except the MLP under paired McNemar tests. The two rarest classes reach the highest ROC-AUCs (0.88 and 0.86) despite low F1, showing their weakness is a thresholding and base-rate effect rather than missing signal.',
     keywords: [
       'Crime classification',
       'Class imbalance',
