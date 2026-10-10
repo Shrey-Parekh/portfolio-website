@@ -1224,3 +1224,378 @@
     transition: none;
   }
 }
+
+/* ── Print edition ─────────────────────────────────────────────────────
+   On screen it is a single sheet of paper with a print button above it. In
+   print every section starts a fresh A4 page, the site chrome disappears,
+   and the palette is forced to the light theme whatever the reader chose. */
+.ed-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ed-toolbar p {
+  margin: 0;
+  max-width: 32rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.ed-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--accent);
+  background: var(--panel);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  transition: background-color 0.35s var(--ease-out);
+}
+
+.ed-print-btn:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+}
+
+.ed-paper {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 2rem 1.25rem 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .ed-paper {
+    padding: 3.5rem 3.5rem 4rem;
+  }
+}
+
+.ed-paper a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 0.18em;
+}
+
+/* Cover */
+.ed-kicker {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
+.ed-name {
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 7vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.ed-name .font-script {
+  font-weight: 400;
+  font-size: 1.3em;
+  color: var(--accent);
+}
+
+.ed-tag {
+  margin: 1rem 0 0;
+  max-width: 30rem;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.ed-cover-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  margin-top: 2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted-strong);
+}
+
+.ed-contents {
+  margin: 3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ed-contents li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--fg);
+}
+
+.ed-contents-n {
+  width: 2.2rem;
+  flex-shrink: 0;
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* Dotted leaders run to what each section holds; a browser cannot know page
+   numbers ahead of printing, so the counts stand in for them. */
+.ed-leader {
+  flex: 1;
+  border-bottom: 1px dotted var(--border);
+}
+
+.ed-contents-count {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Sections */
+.ed-section {
+  margin-top: 4rem;
+}
+
+.ed-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--fg);
+}
+
+.ed-head-n {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.ed-head-label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.ed-group-name {
+  margin: 2rem 0 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+}
+
+.ed-entry {
+  padding: 1rem 0 1.15rem;
+  border-top: 1px solid var(--border);
+}
+
+.ed-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted-strong);
+}
+
+.ed-entry-title {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.25;
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+.ed-text {
+  margin: 0.55rem 0 0;
+  max-width: 40em;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--fg);
+  hyphens: auto;
+  text-wrap: pretty;
+}
+
+.ed-section > .ed-text + .ed-text {
+  margin-top: 0.8rem;
+}
+
+.ed-line {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.ed-term {
+  margin-right: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted-strong);
+}
+
+.ed-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 1.6rem 0 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.ed-details dt {
+  display: block;
+  margin: 0 0 0.25rem;
+}
+
+.ed-details dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--fg);
+}
+
+.ed-points {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ed-points li {
+  position: relative;
+  margin-top: 0.3rem;
+  padding-left: 1rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--fg);
+}
+
+.ed-points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 0.45rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+.ed-colophon {
+  margin: 3rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@page {
+  size: A4;
+  margin: 16mm 15mm 18mm;
+}
+
+@media print {
+  :root,
+  .dark {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --fg: #1f3324;
+    --muted: #4f4f45;
+    --muted-strong: #4f4f45;
+    --accent: #7a5c30;
+    --border: #cfc7b0;
+    --texture-opacity: 0;
+  }
+
+  /* rem drives every size above, so one root size sets the whole edition. */
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  /* Site chrome is for the screen; printing any page drops it, not only this one. */
+  #top > header,
+  #top > footer,
+  .skip-link,
+  .cursor-mark,
+  .texture-overlay,
+  .ed-toolbar {
+    display: none !important;
+  }
+
+  .ed-wrap {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .ed-paper {
+    border: 0;
+    padding: 0;
+  }
+
+  .ed-section {
+    margin-top: 0;
+    break-before: page;
+  }
+
+  .ed-head,
+  .ed-group-name {
+    break-after: avoid;
+  }
+
+  .ed-entry,
+  .ed-details {
+    break-inside: avoid;
+  }
+
+  .ed-paper a {
+    text-decoration: none;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

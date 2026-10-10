@@ -10,6 +10,7 @@ import Projects from './pages/Projects';
 import Blogs from './pages/Blogs';
 import Experience from './pages/Experience';
 import NotFound from './pages/NotFound';
+import PrintEdition from './pages/PrintEdition';
 import { ThemeProvider } from './context/ThemeContext';
 
 const SITE_URL = 'https://shrey-parekh.vercel.app';
@@ -17,6 +18,8 @@ const SITE_URL = 'https://shrey-parekh.vercel.app';
 interface PageMeta {
   title: string;
   description: string;
+  /* Pages that repeat content found elsewhere stay out of the index. */
+  noindex?: boolean;
 }
 
 /* Every route is served the same index.html, so without this each page would
@@ -42,6 +45,12 @@ const PAGE_META: Record<string, PageMeta> = {
     title: 'Experience & Leadership — Shrey Parekh',
     description:
       'The professional and extracurricular record of Shrey Parekh: engineering experience, AI and machine learning work, and student committee leadership at NMIMS MPSTME, Mumbai.',
+  },
+  '/print': {
+    title: 'Print Edition — Shrey Parekh',
+    description:
+      'The whole portfolio of Shrey Parekh typeset as one printable document: projects, research papers, experience, and contact details.',
+    noindex: true,
   },
 };
 
@@ -85,7 +94,9 @@ function RouteManager() {
     if (robots) {
       robots.setAttribute(
         'content',
-        PAGE_META[location.pathname] ? 'index, follow' : 'noindex, follow'
+        PAGE_META[location.pathname] && !PAGE_META[location.pathname].noindex
+          ? 'index, follow'
+          : 'noindex, follow'
       );
     }
   }, [location.pathname]);
@@ -141,6 +152,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/experience" element={<Experience />} />
+            <Route path="/print" element={<PrintEdition />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

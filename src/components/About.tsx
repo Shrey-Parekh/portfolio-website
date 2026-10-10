@@ -2,13 +2,19 @@ import { CSSProperties } from 'react';
 import Section from './Section';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
-const details = [
+export const details = [
   { label: 'Degree', value: 'B.Tech Computer Engineering, AI/ML' },
   // Comma list with no conjunction, matching the other fields. The non-breaking
   // space keeps "data science" whole so the value can't orphan a word.
   { label: 'Focus', value: 'AI, ML, data science' },
   { label: 'Location', value: 'Mumbai, India' },
   { label: 'Status', value: 'Open to internships and collaborations' },
+];
+
+/* The bio, shared with the print edition so the two never drift apart. */
+export const bio = [
+  "I'm a final-year computer engineering student at NMIMS MPSTME in Mumbai, focused on AI and machine learning. I like figuring out how something works and then building my own version of it.",
+  "I try not to spend all day at a desk though. I like being outdoors and staying active when I can. When I'm not doing that, it's usually sports, gaming, or watching F1. I also watch a lot of movies and shows, comedy, sci-fi, horror, mystery thrillers, basically all of it. If it's good, I've probably already seen it.",
 ];
 
 type DelayStyle = CSSProperties & Record<'--d', string>;
@@ -75,16 +81,10 @@ const About = () => {
                 >
                   I
                 </span>
-                <span className="sr-only">I</span>'m a final-year computer engineering student at
-                NMIMS MPSTME in Mumbai, focused on AI and machine learning. I like figuring out
-                how something works and then building my own version of it.
+                <span className="sr-only">I</span>{bio[0].slice(1)}
               </p>
               <p className="font-body text-base leading-relaxed text-muted sm:text-lg">
-                I try not to spend all day at a desk though. I like being outdoors and staying
-                active when I can. When I'm not doing that, it's usually sports, gaming, or
-                watching F1. I also watch a lot of movies and shows, comedy, sci-fi, horror,
-                mystery thrillers, basically all of it. If it's good, I've probably already seen
-                it.
+                {bio[1]}
               </p>
             </div>
           </div>

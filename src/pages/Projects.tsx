@@ -7,7 +7,7 @@ type DelayStyle = CSSProperties & Record<'--d', string>;
 
 const delay = (seconds: number): DelayStyle => ({ '--d': `${seconds}s` });
 
-type Tag = 'AI / ML' | 'Web' | 'Hardware';
+export type Tag = 'AI / ML' | 'Web' | 'Hardware';
 
 const TAG_STYLES: Record<Tag, { text: string }> = {
   'AI / ML': { text: 'text-tagSystems' },
@@ -15,13 +15,13 @@ const TAG_STYLES: Record<Tag, { text: string }> = {
   Hardware: { text: 'text-tagHardware' },
 };
 
-interface Deliverable {
+export interface Deliverable {
   label: string;
   state: string;
   href?: string;
 }
 
-interface Project {
+export interface Project {
   id: string;
   no: string;
   numeral: string;
@@ -40,7 +40,7 @@ interface Project {
   deliverables: Deliverable[];
 }
 
-const projects: Project[] = [
+export const projects: Project[] = [
   {
     id: 'fixr',
     no: 'No. 01',
@@ -229,7 +229,7 @@ const projects: Project[] = [
 ];
 const tagText = (tag: Tag) => TAG_STYLES[tag].text;
 
-const ORDER: Tag[] = ['AI / ML', 'Web', 'Hardware'];
+export const ORDER: Tag[] = ['AI / ML', 'Web', 'Hardware'];
 
 /* One line of the plate's object label: term, dotted leader, value. */
 const SpecRow = ({ term, value, href }: { term: string; value: string; href?: string }) => {

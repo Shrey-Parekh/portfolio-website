@@ -14,7 +14,7 @@ type DelayStyle = CSSProperties & Record<'--d', string>;
 
 const delay = (seconds: number): DelayStyle => ({ '--d': `${seconds}s` });
 
-interface Paper {
+export interface Paper {
   id: string;
   numeral: string;
   kind: string;
@@ -31,7 +31,7 @@ interface Paper {
   size?: string;
 }
 
-const papers: Paper[] = [
+export const papers: Paper[] = [
   {
     id: 'paper-1',
     numeral: 'I',

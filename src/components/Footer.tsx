@@ -8,6 +8,7 @@ const nav = [
   { to: '/blogs', label: 'Blogs' },
   { to: '/experience', label: 'Experience' },
   { to: '/#contact', label: 'Contact' },
+  { to: '/print', label: 'Print edition' },
 ];
 
 const elsewhere = [

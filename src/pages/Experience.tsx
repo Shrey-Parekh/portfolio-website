@@ -7,7 +7,7 @@ type DelayStyle = CSSProperties & Record<'--d', string>;
 
 const delay = (seconds: number): DelayStyle => ({ '--d': `${seconds}s` });
 
-interface Role {
+export interface Role {
   id: string;
   role: string;
   org: string;
@@ -18,7 +18,7 @@ interface Role {
   hrefLabel?: string;
 }
 
-const experience: Role[] = [
+export const experience: Role[] = [
   {
     id: 'exp-1',
     role: 'Data Analyst Intern',
@@ -54,7 +54,7 @@ const experience: Role[] = [
   },
 ];
 
-const leadership: Role[] = [
+export const leadership: Role[] = [
   {
     id: 'lead-1',
     role: 'Technical Head',
@@ -90,7 +90,7 @@ const leadership: Role[] = [
   },
 ];
 
-const interests = ['Outdoors & adventure', 'Sports', 'Gaming', 'Formula 1', 'Films & series'];
+export const interests = ['Outdoors & adventure', 'Sports', 'Gaming', 'Formula 1', 'Films & series'];
 
 const RoleEntry = ({ role, d }: { role: Role; d: number }) => (
   <div data-reveal style={delay(d)} className="relative pl-9">

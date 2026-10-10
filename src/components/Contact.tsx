@@ -13,7 +13,7 @@ interface Channel {
   href?: string;
 }
 
-const channels: Channel[] = [
+export const channels: Channel[] = [
   {
     label: 'LinkedIn',
     handle: 'shrey-parekh',
