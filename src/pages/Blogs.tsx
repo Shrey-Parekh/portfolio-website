@@ -84,6 +84,8 @@ const papers: Paper[] = [
       'Gradient boosting',
       'Spatio-temporal features',
     ],
+    pdf: '/crime-paper.pdf',
+    size: '648 KB',
   },
   {
     id: 'paper-4',
