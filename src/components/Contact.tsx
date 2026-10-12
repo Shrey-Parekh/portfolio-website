@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 import { ArrowUpRight, Download } from 'lucide-react';
 import Section from './Section';
+import Typewriter from './Typewriter';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 type DelayStyle = CSSProperties & Record<'--d', string>;
@@ -179,6 +180,12 @@ const Contact = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Typewriter: the note is written here and posted from the visitor's
+            own mail app, so a reply goes straight back to them. */}
+        <div data-reveal style={delay(0.45)} className="mt-6">
+          <Typewriter />
         </div>
 
         {/* Résumé band */}
