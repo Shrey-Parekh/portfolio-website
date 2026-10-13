@@ -165,8 +165,10 @@
 
 /* ── Projects: catalogue and plate ─────────────────────────────────────
    These works have no photography, so the composition carries the page: a
-   quiet standing index on the left, and the selected work set large beside
-   it. The index never moves; only the plate changes. */
+   standing index on the left, and the selected work set large beside it.
+   Everything on the plate hangs from one left edge and stops at one right
+   edge, so it reads as a single column rather than a stack of differently
+   sized boxes. */
 
 .works {
   margin-top: 3rem;
@@ -175,10 +177,10 @@
 @media (min-width: 1024px) {
   .works {
     display: grid;
-    grid-template-columns: minmax(11rem, 15rem) 1fr;
-    gap: 4rem;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 3.5rem;
     align-items: start;
-    margin-top: 4rem;
+    margin-top: 3.5rem;
   }
 
   /* The index stands still while the plate scrolls beside it. */
@@ -190,101 +192,132 @@
 
 /* ── The standing index ─────────────────────────────────────────────── */
 .idx-group + .idx-group {
-  margin-top: 1.75rem;
+  margin-top: 1.6rem;
 }
 
 .idx-group-name {
+  margin: 0 0 0.55rem;
   font-family: var(--font-body);
   font-size: 0.66rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  margin-bottom: 0.5rem;
 }
 
+/* A hairline rail runs down each group, and the standing work is marked on
+   it, the way a ruler marks a place in a column of type. */
 .idx-group ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  border-left: 1px solid var(--border);
 }
 
 .idx-row {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  align-items: baseline;
+  gap: 0.7rem;
   width: 100%;
-  padding: 0.32rem 0;
-  background: none;
+  padding: 0.38rem 0 0.38rem 0.9rem;
   border: 0;
+  background: none;
   text-align: left;
   font-family: var(--font-body);
-  font-size: 0.88rem;
-  line-height: 1.4;
+  font-size: 0.9rem;
+  line-height: 1.35;
   color: var(--muted);
   transition: color 0.3s var(--ease-out);
 }
 
-/* A rule that grows out of the margin to point at the standing work. */
-.idx-rule {
-  flex-shrink: 0;
-  width: 0.85rem;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0.25);
-  transform-origin: left;
-  opacity: 0.4;
-  transition: transform 0.35s var(--ease-out), opacity 0.35s var(--ease-out);
+.idx-row::before {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  bottom: 0.3rem;
+  left: -1px;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transition: transform 0.35s var(--ease-out);
 }
 
-/* Below the sidebar breakpoint the index is a tappable stacked list, not a
-   quiet standing margin note, so it needs to read and hit like one: a bigger
-   label with real letter-forms instead of a thin spread, and a proper touch
-   target on each row (was 34px tall, under the 44px minimum). */
-@media (max-width: 1023px) {
-  .idx-group-name {
-    font-size: 0.82rem;
-    letter-spacing: 0.1em;
-  }
+.idx-no {
+  flex-shrink: 0;
+  width: 1.35rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-strong);
+  transition: color 0.3s var(--ease-out);
+}
 
-  .idx-row {
-    min-height: 44px;
-    padding: 0.6rem 0;
-    font-size: 1rem;
-    gap: 0.75rem;
-  }
+.idx-name {
+  flex: 1;
+  min-width: 0;
+}
 
-  .idx-rule {
-    width: 1.1rem;
-  }
+/* Status flags share the right edge, so the works you can open today and the
+   one still being built stand out on a scan down the list. */
+.idx-flag {
+  flex-shrink: 0;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted-strong);
+}
+
+.idx-flag.is-live {
+  color: var(--accent);
 }
 
 .idx-row:hover {
   color: var(--fg);
 }
 
-.idx-row:hover .idx-rule {
-  transform: scaleX(0.7);
-  opacity: 0.7;
+.idx-row:hover::before {
+  transform: scaleY(0.4);
 }
 
 .idx-row.is-on {
+  color: var(--fg);
+}
+
+.idx-row.is-on::before {
+  transform: scaleY(1);
+}
+
+.idx-row.is-on .idx-no {
   color: var(--accent);
 }
 
-.idx-row.is-on .idx-rule {
-  transform: scaleX(1);
-  opacity: 1;
-}
+/* Below the sidebar breakpoint the index is a tappable list, so each row is
+   a full touch target and the type grows to match. */
+@media (max-width: 1023px) {
+  .idx-group-name {
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+  }
 
-.idx-name {
-  min-width: 0;
+  .idx-row {
+    min-height: 44px;
+    align-items: center;
+    padding: 0.55rem 0 0.55rem 1rem;
+    font-size: 1rem;
+  }
+
+  .idx-flag {
+    font-size: 0.62rem;
+  }
 }
 
 /* ── The plate ──────────────────────────────────────────────────────── */
 .works-plate {
   margin-top: 2.5rem;
-  padding-top: 1.75rem;
+  padding-top: 2rem;
   border-top: 1px solid var(--border);
+  scroll-margin-top: 6rem;
 }
 
 @media (min-width: 1024px) {
@@ -292,134 +325,277 @@
     margin-top: 0;
     padding-top: 0;
     border-top: 0;
-    min-height: 30rem;
   }
+}
+
+/* Head: the catalogue number set large, the facts beside it on one rule. */
+.plate-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.plate-no {
+  font-family: var(--font-display);
+  font-size: 3.1rem;
+  font-style: italic;
+  line-height: 0.8;
+  color: var(--accent);
 }
 
 .plate-meta {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: baseline;
-  gap: 0.5rem 1.1rem;
+  gap: 0.35rem 1rem;
+  margin-left: auto;
+  padding-bottom: 0.1rem;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
 }
 
 .plate-year,
 .plate-status {
-  color: var(--muted);
+  color: var(--muted-strong);
 }
 
-/* The one live project earns the only coloured status on the page. */
 .plate-live {
   color: var(--accent);
 }
 
+/* The name is the headline; what it is follows as a quieter subtitle, so a
+   long title no longer runs to three lines of display type. */
 .plate-title {
-  margin: 0.85rem 0 0;
+  margin: 1.4rem 0 0;
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4.6vw, 3rem);
-  line-height: 1.08;
-  letter-spacing: -0.012em;
+  font-size: clamp(2.1rem, 4.2vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
   color: var(--fg);
-  max-width: 18ch;
 }
 
-.plate-summary {
-  margin: 1.5rem 0 0;
-  max-width: 46ch;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.7;
+.plate-subtitle {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: clamp(1.05rem, 1.9vw, 1.3rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
   color: var(--muted);
+  text-wrap: balance;
 }
 
-.plate-spec {
-  margin-top: 2rem;
-  max-width: 34rem;
-  border-top: 1px solid var(--border);
-  padding-top: 0.75rem;
-}
-
-.spec-row {
+/* What you can open: the live build first, then the source. */
+.plate-actions {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.3rem 0;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  text-decoration: none;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
 }
 
-.spec-term {
-  flex-shrink: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--fg);
-}
-
-.spec-leader {
-  flex: 1;
-  height: 0;
-  border-bottom: 1px dotted var(--border);
-  transition: border-color 0.3s var(--ease-out);
-}
-
-.spec-value {
+.plate-action {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  flex-shrink: 0;
-  font-style: italic;
-  color: var(--muted);
-  transition: color 0.3s var(--ease-out);
+  gap: 0.55rem;
+  min-height: 42px;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  color: var(--fg);
+  text-decoration: none;
+  transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out),
+    background-color 0.3s var(--ease-out);
 }
 
-.spec-arrow {
+.plate-action svg {
+  flex-shrink: 0;
   transition: transform 0.3s var(--ease-out);
 }
 
-.spec-row.is-link:hover .spec-value {
+.plate-action:hover {
+  border-color: var(--accent);
   color: var(--accent);
 }
 
-.spec-row.is-link:hover .spec-leader {
-  border-bottom-color: var(--accent);
-  border-bottom-style: solid;
-}
-
-.spec-row.is-link:hover .spec-arrow {
+.plate-action:hover svg {
   transform: translate(2px, -2px);
 }
 
-/* The stack is this work's only picture, so it is set as a field. */
+.plate-action.is-primary {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.plate-action.is-primary:hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--fg);
+}
+
+.plate-action-host {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+@media (max-width: 639px) {
+  .plate-action {
+    flex: 1 1 100%;
+    min-height: 44px;
+  }
+
+  .plate-action svg {
+    margin-left: auto;
+  }
+}
+
+.plate-summary {
+  margin: 1.6rem 0 0;
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.72;
+  color: var(--fg);
+  hyphens: auto;
+  text-wrap: pretty;
+}
+
+/* The object label: term and value in two fixed columns, so every value
+   starts on the same vertical and reads as text rather than a caption. */
+.plate-spec {
+  margin: 2rem 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.spec-row dt {
+  margin: 0;
+  padding-top: 0.22rem;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted-strong);
+}
+
+.spec-row dd {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--fg);
+}
+
+@media (max-width: 479px) {
+  .spec-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .spec-row dt {
+    padding-top: 0;
+  }
+}
+
+/* The stack is this work's only picture, so each tool is set as a chip that
+   wraps cleanly instead of a run of separators that breaks mid-line. */
 .plate-stack {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 0;
-  list-style: none;
-  margin: 2rem 0 0;
+  gap: 0.45rem;
+  margin: 1.6rem 0 0;
   padding: 0;
+  list-style: none;
 }
 
 .plate-stack li {
-  padding: 0 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
+  line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-  border-right: 1px solid var(--border);
+  letter-spacing: 0.12em;
+  color: var(--muted-strong);
 }
 
-.plate-stack li:first-child {
-  padding-left: 0;
+/* Stepping through the works without going back to the index. */
+.plate-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
 }
 
-.plate-stack li:last-child {
-  border-right: 0;
+.plate-step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.35rem 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--fg);
+}
+
+.plate-step.is-next {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.plate-step-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted-strong);
+  transition: color 0.3s var(--ease-out);
+}
+
+.plate-step-name {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.3s var(--ease-out);
+}
+
+.plate-step:hover .plate-step-dir,
+.plate-step:hover .plate-step-name {
+  color: var(--accent);
+}
+
+.plate-count {
+  padding-bottom: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-strong);
 }
 
 /* ── Changing the plate is the page's one orchestrated moment ────────── */
@@ -439,26 +615,12 @@
 }
 
 .plate > *:nth-child(1) { animation-delay: 0s; }
-.plate > *:nth-child(2) { animation-delay: 0.05s; }
-.plate > *:nth-child(3) { animation-delay: 0.1s; }
-.plate > *:nth-child(4) { animation-delay: 0.15s; }
-.plate > *:nth-child(5) { animation-delay: 0.2s; }
-
-@media (max-width: 639px) {
-  .spec-row {
-    flex-wrap: wrap;
-    gap: 0.1rem;
-    padding: 0.42rem 0;
-  }
-
-  .spec-leader {
-    display: none;
-  }
-
-  .spec-value {
-    flex: 1 1 100%;
-  }
-}
+.plate > *:nth-child(2) { animation-delay: 0.04s; }
+.plate > *:nth-child(3) { animation-delay: 0.08s; }
+.plate > *:nth-child(4) { animation-delay: 0.12s; }
+.plate > *:nth-child(5) { animation-delay: 0.16s; }
+.plate > *:nth-child(6) { animation-delay: 0.2s; }
+.plate > *:nth-child(7) { animation-delay: 0.24s; }
 
 @media (prefers-reduced-motion: reduce) {
   .plate > * {
@@ -466,10 +628,12 @@
   }
 
   .idx-row,
-  .idx-rule,
-  .spec-leader,
-  .spec-value,
-  .spec-arrow {
+  .idx-row::before,
+  .idx-no,
+  .plate-action,
+  .plate-action svg,
+  .plate-step-dir,
+  .plate-step-name {
     transition: none;
   }
 }
@@ -1122,105 +1286,6 @@
 
   .chan-leader {
     transform: scaleX(1);
-    transition: none;
-  }
-}
-
-/* ── Projects: the live-site band ──────────────────────────────────────
-   Most of these works can only be read about. The two that are deployed can
-   actually be used, which is worth more than any description on the page, so
-   the address gets its own band instead of a row in the spec list. */
-.live-band {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  margin-top: 1.75rem;
-  padding: 0.9rem 1.25rem;
-  border: 1px solid var(--accent);
-  background: var(--panel);
-  text-decoration: none;
-  transition: background-color 0.35s var(--ease-out);
-}
-
-.live-band:hover {
-  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
-}
-
-.live-band-text {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.live-band-label {
-  font-family: var(--font-body);
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: var(--accent);
-}
-
-/* The URL is the point of the band, so it is set as content, not as a caption. */
-.live-band-url {
-  overflow: hidden;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  line-height: 1.2;
-  color: var(--fg);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: color 0.35s var(--ease-out);
-}
-
-.live-band:hover .live-band-url {
-  color: var(--accent);
-}
-
-.live-band-arrow {
-  flex-shrink: 0;
-  color: var(--accent);
-  transition: transform 0.35s var(--ease-out);
-}
-
-.live-band:hover .live-band-arrow {
-  transform: translate(2px, -2px);
-}
-
-/* A truncated address is useless, so on narrow screens the band gives up some
-   type size and padding rather than ellipsing the URL. */
-@media (max-width: 639px) {
-  .live-band {
-    gap: 1rem;
-    padding: 0.85rem 1rem;
-  }
-
-  .live-band-url {
-    font-size: 0.9rem;
-  }
-}
-
-/* Index marker: a small accent rule after the name, so someone scanning the
-   catalogue can tell which two works they can actually open. */
-.idx-live {
-  margin-left: 0.5rem;
-  height: 5px;
-  width: 5px;
-  flex-shrink: 0;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-}
-
-.idx-row.is-on .idx-live,
-.idx-row:hover .idx-live {
-  background: transparent;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .live-band,
-  .live-band-url,
-  .live-band-arrow {
     transition: none;
   }
 }

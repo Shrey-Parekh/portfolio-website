@@ -1,5 +1,5 @@
 import { CSSProperties, KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import Section from '../components/Section';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
@@ -100,8 +100,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-5',
-    no: 'No. 05',
-    numeral: 'V',
+    no: 'No. 04',
+    numeral: 'IV',
     title: 'AI Tutor: PDF Learning Assistant',
     tag: 'AI / ML',
     status: 'Complete',
@@ -118,8 +118,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-6',
-    no: 'No. 06',
-    numeral: 'VI',
+    no: 'No. 05',
+    numeral: 'V',
     title: 'ResumeAI: Resume Management Platform',
     tag: 'AI / ML',
     status: 'Complete',
@@ -136,8 +136,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-7',
-    no: 'No. 07',
-    numeral: 'VII',
+    no: 'No. 06',
+    numeral: 'VI',
     title: 'Game Arena: Realtime Multiplayer Platform',
     tag: 'Web',
     status: 'Complete',
@@ -155,8 +155,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-8',
-    no: 'No. 08',
-    numeral: 'VIII',
+    no: 'No. 07',
+    numeral: 'VII',
     title: 'LoopIn: College Event and Community Portal',
     tag: 'Web',
     status: 'Complete',
@@ -174,8 +174,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-9',
-    no: 'No. 09',
-    numeral: 'IX',
+    no: 'No. 08',
+    numeral: 'VIII',
     title: 'Trivio: Full-Stack Quiz Platform',
     tag: 'Web',
     status: 'Complete',
@@ -192,8 +192,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-10',
-    no: 'No. 10',
-    numeral: 'X',
+    no: 'No. 09',
+    numeral: 'IX',
     title: 'Sumo Bot: ESP32 Combat Robot',
     tag: 'Hardware',
     status: 'Built',
@@ -210,8 +210,8 @@ export const projects: Project[] = [
   },
   {
     id: 'plate-11',
-    no: 'No. 11',
-    numeral: 'XI',
+    no: 'No. 10',
+    numeral: 'X',
     title: 'Gesture-Controlled Rover',
     tag: 'Hardware',
     status: 'Built',
@@ -231,83 +231,116 @@ const tagText = (tag: Tag) => TAG_STYLES[tag].text;
 
 export const ORDER: Tag[] = ['AI / ML', 'Web', 'Hardware'];
 
-/* One line of the plate's object label: term, dotted leader, value. */
-const SpecRow = ({ term, value, href }: { term: string; value: string; href?: string }) => {
-  const body = (
-    <>
-      <span className="spec-term">{term}</span>
-      <span aria-hidden="true" className="spec-leader" />
-      <span className="spec-value">
-        {value}
-        {href && <ArrowUpRight size={11} className="spec-arrow" aria-hidden="true" />}
-      </span>
-    </>
-  );
-  return href ? (
-    <a className="spec-row is-link" href={href} target="_blank" rel="noopener noreferrer">
-      {body}
-    </a>
-  ) : (
-    <div className="spec-row">{body}</div>
-  );
+const shortName = (p: Project) => p.title.split(':')[0];
+const catalogueNo = (p: Project) => p.no.replace(/\D/g, '');
+
+/* "Fixr: Security Analysis for AI-Generated Codebases" is a name and a
+   description. Set as one headline it ran to three lines, so the name leads
+   and the description follows as a subtitle. */
+const splitTitle = (title: string) => {
+  const i = title.indexOf(':');
+  return i < 0 ? [title, ''] : [title.slice(0, i), title.slice(i + 1).trim()];
 };
 
-/* A deployed build gets an address band rather than a button: the URL is the
-   point, so it is set large in the display face and the label sits above it,
-   the way a specimen plate carries its reference. */
-const LiveBand = ({ href }: { href: string }) => {
-  const host = new URL(href).hostname.replace(/^www\./, '');
+const linkLabel = (d: Deliverable) => (d.label === 'Code' ? 'Source code' : d.label);
 
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="live-band group/live"
-    >
-      <span className="live-band-text">
-        <span className="live-band-label">Live site</span>
-        <span className="live-band-url">{host}</span>
-      </span>
-      <ArrowUpRight size={18} className="live-band-arrow" />
-    </a>
-  );
-};
+interface PlateProps {
+  project: Project;
+  position: number;
+  prev: Project;
+  next: Project;
+  onStep: (dir: 1 | -1) => void;
+}
 
 /* The plate: the selected work, set large. Keyed on project id so React
    remounts it and the entrance animation replays on every change. */
-const Plate = ({ project }: { project: Project }) => (
-  <article className="plate" key={project.id} id={`plate-${project.id}`}>
-    <div className="plate-meta">
-      <span className={tagText(project.tag)}>{project.tag}</span>
-      {project.year && <span className="plate-year">{project.year}</span>}
-      <span className={project.status === 'In progress' ? 'plate-live' : 'plate-status'}>
-        {project.status}
-      </span>
-    </div>
+const Plate = ({ project, position, prev, next, onStep }: PlateProps) => {
+  const [name, subtitle] = splitTitle(project.title);
+  const links = project.deliverables.filter((d) => d.href);
+  const specs = project.deliverables.filter((d) => !d.href);
+  const host = project.live ? new URL(project.live).hostname.replace(/^www\./, '') : '';
 
-    <h2 className="plate-title">{project.title}</h2>
+  return (
+    <article className="plate" key={project.id} id={`plate-${project.id}`}>
+      <header className="plate-head">
+        <span className="plate-no" aria-hidden="true">
+          {catalogueNo(project)}
+        </span>
+        <div className="plate-meta">
+          <span className={tagText(project.tag)}>{project.tag}</span>
+          {project.year && <span className="plate-year">{project.year}</span>}
+          <span className={project.status === 'In progress' ? 'plate-live' : 'plate-status'}>
+            {project.status}
+          </span>
+        </div>
+      </header>
 
-    <p className="plate-summary">{project.summary}</p>
+      <h2 className="plate-title">
+        {name}
+        {subtitle && <span className="plate-subtitle">{subtitle}</span>}
+      </h2>
 
-    {project.live && <LiveBand href={project.live} />}
+      {(project.live || links.length > 0) && (
+        <div className="plate-actions">
+          {project.live && (
+            <a className="plate-action is-primary" href={project.live} target="_blank" rel="noopener noreferrer">
+              <span>Visit the live site</span>
+              <span className="plate-action-host">{host}</span>
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </a>
+          )}
+          {links.map((d) => (
+            <a key={d.label} className="plate-action" href={d.href} target="_blank" rel="noopener noreferrer">
+              <span>{linkLabel(d)}</span>
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </a>
+          ))}
+        </div>
+      )}
 
-    <div className="plate-spec">
-      <SpecRow term="State" value={project.state} />
-      {project.deliverables.map((d) => (
-        <SpecRow key={d.label} term={d.label} value={d.state} href={d.href} />
-      ))}
-    </div>
+      <p className="plate-summary">{project.summary}</p>
 
-    {/* The technologies are the only imagery this work has, so they are set
-        as a field rather than hidden in a caption. */}
-    <ul className="plate-stack" aria-label="Built with">
-      {project.stack.map((tech) => (
-        <li key={tech}>{tech}</li>
-      ))}
-    </ul>
-  </article>
-);
+      <dl className="plate-spec">
+        <div className="spec-row">
+          <dt>State</dt>
+          <dd>{project.state}</dd>
+        </div>
+        {specs.map((d) => (
+          <div key={d.label} className="spec-row">
+            <dt>{d.label}</dt>
+            <dd>{d.state}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* The technologies are the only imagery this work has, so they are set
+          as a field rather than hidden in a caption. */}
+      <ul className="plate-stack" aria-label="Built with">
+        {project.stack.map((tech) => (
+          <li key={tech}>{tech}</li>
+        ))}
+      </ul>
+
+      <nav className="plate-nav" aria-label="Step through the works">
+        <button type="button" className="plate-step" onClick={() => onStep(-1)}>
+          <span className="plate-step-dir">
+            <ArrowLeft size={12} aria-hidden="true" /> Previous
+          </span>
+          <span className="plate-step-name">{shortName(prev)}</span>
+        </button>
+        <span className="plate-count">
+          {String(position + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
+        </span>
+        <button type="button" className="plate-step is-next" onClick={() => onStep(1)}>
+          <span className="plate-step-dir">
+            Next <ArrowRight size={12} aria-hidden="true" />
+          </span>
+          <span className="plate-step-name">{shortName(next)}</span>
+        </button>
+      </nav>
+    </article>
+  );
+};
 
 const Projects = () => {
   const header = useScrollReveal<HTMLDivElement>(0.1);
@@ -324,11 +357,17 @@ const Projects = () => {
     setActiveId(id);
     window.history.replaceState(null, '', `#${id}`);
     // Below the lg breakpoint the plate sits under the index, so bring it up.
-    if (scroll && window.matchMedia('(max-width: 1023px)').matches) {
-      requestAnimationFrame(() =>
-        plateRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      );
-    }
+    // On wide screens only scroll when the new plate starts above the view,
+    // which is where Next leaves you after reading to the end of a long one.
+    if (!scroll) return;
+    requestAnimationFrame(() => {
+      const plate = plateRef.current;
+      if (!plate) return;
+      const narrow = window.matchMedia('(max-width: 1023px)').matches;
+      if (narrow || plate.getBoundingClientRect().top < 0) {
+        plate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
   }, []);
 
   /* Up/down arrows walk the whole catalogue, across group boundaries. */
@@ -345,7 +384,10 @@ const Projects = () => {
     [activeId, select]
   );
 
-  const active = projects.find((p) => p.id === activeId) ?? projects[0];
+  const position = Math.max(0, projects.findIndex((p) => p.id === activeId));
+  const active = projects[position];
+  const at = (offset: number) => projects[(position + offset + projects.length) % projects.length];
+  const step = (dir: 1 | -1) => select(at(dir).id, true);
   const groups = ORDER.map((tag) => ({
     tag,
     items: projects.filter((p) => p.tag === tag),
@@ -389,14 +431,15 @@ const Projects = () => {
                       aria-current={p.id === activeId}
                       className={`idx-row ${p.id === activeId ? 'is-on' : ''}`}
                     >
-                      <span aria-hidden="true" className="idx-rule" />
-                      <span className="idx-name">{p.title.split(':')[0]}</span>
-              {p.live && (
-                <>
-                  <span aria-hidden="true" className="idx-live" />
-                  <span className="sr-only">(has a live site)</span>
-                </>
-              )}
+                      <span aria-hidden="true" className="idx-no">
+                        {catalogueNo(p)}
+                      </span>
+                      <span className="idx-name">{shortName(p)}</span>
+                      {p.live ? (
+                        <span className="idx-flag is-live">Live</span>
+                      ) : p.statusShort === 'In progress' ? (
+                        <span className="idx-flag">Building</span>
+                      ) : null}
                     </button>
                   </li>
                 ))}
@@ -406,7 +449,7 @@ const Projects = () => {
         </nav>
 
         <div className="works-plate" ref={plateRef}>
-          <Plate project={active} />
+          <Plate project={active} position={position} prev={at(-1)} next={at(1)} onStep={step} />
         </div>
       </div>
     </Section>
